@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.LobbyActivity">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+        <TextView
+            android:text="bHaptics Demo"
+            android:textSize="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/scan_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scan for connect"/>
+
+        <Button
+            android:id="@+id/drawing_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Drawing Example"/>
+
+        <Button
+            android:id="@+id/tact_file_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tact File Example"/>
+
+        <Button
+            android:id="@+id/tactot_file_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tactot File with Rotation"/>
+
+        <TextView
+            android:text="bHaptics Device List"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <ListView
+            android:id="@+id/deviceListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
