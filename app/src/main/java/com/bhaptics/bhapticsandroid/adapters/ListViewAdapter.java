@@ -7,29 +7,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.bhaptics.bhapticsandroid.BhapticsModule;
 import com.bhaptics.bhapticsandroid.activities.LobbyActivity;
 import com.bhaptics.bhapticsandroid.R;
-import com.bhaptics.tact.ble.TactosyDevice;
-import com.bhaptics.tact.client.HapticPlayer;
+import com.bhaptics.bhapticsmanger.BhapticsManager;
+import com.bhaptics.commons.model.BhapticsDevice;
 
 import java.util.List;
 
-public class ListViewAdapter extends BaseAdapter  implements HapticPlayer.DeviceListChangeCallback {
+public class ListViewAdapter extends BaseAdapter {
     public static final String TAG = LobbyActivity.class.getSimpleName();
 
     private LayoutInflater inflater;
-    private List<TactosyDevice> data;
+    private List<BhapticsDevice> data;
     private int layout;
 
-    private Activity context;
+    private final Activity context;
 
-    public ListViewAdapter(Activity context, List<TactosyDevice> defaultDevices) {
+    private BhapticsManager bhapticsManager;
+
+    public ListViewAdapter(final Activity context, List<BhapticsDevice> defaultDevices) {
         this.context = context;
         this.inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.data = defaultDevices;
         this.layout = R.layout.list_item_bhaptics_device;
+
+        bhapticsManager = BhapticsModule.getBhapticsManager();
     }
 
     @Override
@@ -52,7 +58,12 @@ public class ListViewAdapter extends BaseAdapter  implements HapticPlayer.Device
         if(convertView==null){
             convertView=inflater.inflate(layout,parent,false);
         }
-        TactosyDevice bhapticsDevice = data.get(position);
+
+        if (position > data.size()) {
+            return convertView;
+        }
+
+        final BhapticsDevice bhapticsDevice = data.get(position);
         TextView deviceName = convertView.findViewById(R.id.device_name);
         deviceName.setText(bhapticsDevice.getDeviceName());
 
@@ -61,22 +72,37 @@ public class ListViewAdapter extends BaseAdapter  implements HapticPlayer.Device
 
         TextView connection = convertView.findViewById(R.id.device_connection);
         connection.setText(bhapticsDevice.getConnectionStatus().toString());
+        Button button = convertView.findViewById(R.id.device_button);
 
-        return convertView;
-    }
-
-    @Override
-    public void onChange(final List<TactosyDevice> list) {
-        Log.e(TAG, "onChange: " + list );
-
-        context.runOnUiThread(new Runnable() {
+        if (bhapticsDevice.isPaired()) {
+            button.setText("Unpair");
+        } else {
+            button.setText("Pair");
+        }
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                data = list;
-                notifyDataSetChanged();
+            public void onClick(View v) {
+                Log.i(TAG, "onClick: ");
+                if (bhapticsDevice.isPaired()) {
+                    bhapticsManager.unpair(bhapticsDevice.getAddress());
+                } else {
+                    bhapticsManager.pair(bhapticsDevice.getAddress());
+                }
             }
         });
 
 
+
+        return convertView;
+    }
+
+    public void onChangeListUpdate(final List<BhapticsDevice> devices) {
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                data = devices;
+                notifyDataSetChanged();
+            }
+        });
     }
 }

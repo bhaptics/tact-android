@@ -15,10 +15,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.bhaptics.bhapticsandroid.BhapticsModule;
 import com.bhaptics.bhapticsandroid.R;
-import com.bhaptics.tact.nav.NativeHapticPlayer;
-import com.bhaptics.tact.nav.model.PathPoint;
-import com.bhaptics.tact.nav.model.PositionType;
+import com.bhaptics.bhapticsmanger.HapticPlayer;
+import com.bhaptics.commons.model.PathPoint;
+import com.bhaptics.commons.model.PositionType;
 
 import java.util.Arrays;
 
@@ -27,7 +28,7 @@ public class DrawingActivity extends Activity implements View.OnClickListener {
 
     private Button backButton;
 
-    private NativeHapticPlayer hapticPlayer;
+    private HapticPlayer hapticPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class DrawingActivity extends Activity implements View.OnClickListener {
         backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(this);
 
-        hapticPlayer = NativeHapticPlayer.getInstance(this);
+        hapticPlayer = BhapticsModule.getHapticPlayer();
         DrawingView dv = new DrawingView(this);
         linearLayout.addView(dv);
     }

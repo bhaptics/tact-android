@@ -12,12 +12,13 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.bhaptics.bhapticsandroid.BhapticsModule;
 import com.bhaptics.bhapticsandroid.utils.FileUtils;
 import com.bhaptics.bhapticsandroid.R;
-import com.bhaptics.tact.nav.NativeHapticPlayer;
-import com.bhaptics.tact.nav.model.RotationOption;
-import com.bhaptics.tact.nav.model.ScaleOption;
-import com.bhaptics.tact.nav.model.TactFile;
+import com.bhaptics.bhapticsmanger.HapticPlayer;
+import com.bhaptics.commons.model.RotationOption;
+import com.bhaptics.commons.model.ScaleOption;
+import com.bhaptics.commons.model.TactFile;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
 
     private Spinner tactFileSpinner;
 
-    private NativeHapticPlayer hapticPlayer;
+    private HapticPlayer hapticPlayer;
 
     private float duration, intensity;
 
@@ -68,7 +69,7 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
         frontImage.setOnTouchListener(this);
         backImage.setOnTouchListener(this);
 
-        hapticPlayer = NativeHapticPlayer.getInstance(this);
+        hapticPlayer = BhapticsModule.getHapticPlayer();
 
         tactFileSpinner = (Spinner) findViewById(R.id.tactot_feedback_spinner);
 

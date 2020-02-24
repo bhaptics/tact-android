@@ -4,10 +4,15 @@ import android.content.Context;
 import android.util.Log;
 
 import com.bhaptics.bhapticsandroid.adapters.TactFileListAdapter;
-import com.bhaptics.tact.nav.model.TactFile;
+import com.bhaptics.commons.model.TactFile;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,14 +45,17 @@ public class FileUtils {
     public static String read(Context context, String fileName) {
         try {
             InputStream is = context.getAssets().open(fileName);
-            int size = is.available();
-            byte [] buffer = new byte[size];
+            StringBuilder textBuilder = new StringBuilder();
+            try (Reader reader = new BufferedReader(new InputStreamReader
+                    (is, Charset.forName(StandardCharsets.UTF_8.name())))) {
+                int c = 0;
+                while ((c = reader.read()) != -1) {
+                    textBuilder.append((char) c);
+                }
+            }
 
-            is.read(buffer);
-            is.close();
-            String json = new String(buffer,"UTF-8");
 
-            return json;
+            return textBuilder.toString();
         } catch (IOException e) {
             Log.e(TAG, "read: ", e);
         }
