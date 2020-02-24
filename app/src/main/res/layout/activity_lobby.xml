@@ -15,12 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <Button
-            android:id="@+id/scan_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Scan for connect"/>
-
-        <Button
             android:id="@+id/drawing_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,6 +31,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Tactot File with Rotation"/>
+
+        <Button
+            android:id="@+id/scan_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scan"/>
+        <Button
+            android:id="@+id/ping_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ping All"/>
 
         <TextView
             android:text="bHaptics Device List"

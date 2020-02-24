@@ -40,6 +40,5 @@ public class TactFileActivity extends Activity implements View.OnClickListener{
         } else {
             Log.e(TAG, "onClick: ");
         }
-//        finish();
     }
 }

@@ -12,28 +12,35 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.bhaptics.bhapticsandroid.BhapticsModule;
 import com.bhaptics.bhapticsandroid.R;
 import com.bhaptics.bhapticsandroid.adapters.ListViewAdapter;
-import com.bhaptics.tact.ble.DeviceWatcher;
-import com.bhaptics.tact.nav.NativeHapticPlayer;
+import com.bhaptics.bhapticsmanger.BhapticsManager;
+import com.bhaptics.bhapticsmanger.BhapticsManagerCallback;
+import com.bhaptics.bhapticsmanger.PlayerResponse;
+import com.bhaptics.commons.model.BhapticsDevice;
+
+import java.util.List;
 
 public class LobbyActivity extends Activity implements View.OnClickListener {
     public static final String TAG = LobbyActivity.class.getSimpleName();
 
-    private NativeHapticPlayer hapticPlayer;
+    private BhapticsManager bhapticsManager;
     private ListViewAdapter adapter;
 
-    private Button scanButton, drawingButton, tactFileButton, tactotExampleButton;
+    private Button scanButton, drawingButton, tactFileButton, tactotExampleButton, pingallButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
-        DeviceWatcher.isPairedListExist(this);
-        hapticPlayer = NativeHapticPlayer.getInstance(this);
 
-        adapter = new ListViewAdapter(this, hapticPlayer.getDevices());
-        hapticPlayer.setChangeDeviceListCallback(adapter);
+        BhapticsModule.initialize(getApplicationContext());
+
+        bhapticsManager = BhapticsModule.getBhapticsManager();
+
+
+        adapter = new ListViewAdapter(this, bhapticsManager.getDeviceList());
         ListView listview = (ListView) findViewById(R.id.deviceListView) ;
         listview.setAdapter(adapter) ;
 
@@ -48,6 +55,35 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
 
         tactotExampleButton = findViewById(R.id.tactot_file_button);
         tactotExampleButton.setOnClickListener(this);
+
+        pingallButton = findViewById(R.id.ping_button);
+        pingallButton.setOnClickListener(this);
+
+
+        bhapticsManager.addBhapticsManageCallback(new BhapticsManagerCallback() {
+            @Override
+            public void onDeviceUpdate(List<BhapticsDevice> list) {
+                adapter.onChangeListUpdate(list);
+            }
+
+            @Override
+            public void onScanStatusChange(boolean b) {
+                if (b) {
+                    scanButton.setText("Scanning");
+                } else {
+                    scanButton.setText("Scan");
+                }
+            }
+
+            @Override
+            public void onChangeResponse(PlayerResponse playerResponse) { }
+
+            @Override
+            public void onConnect(String s) { }
+
+            @Override
+            public void onDisconnect(String s) { }
+        });
 
     }
 
@@ -73,20 +109,35 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     1);
         } else {
-            hapticPlayer.start();
+            bhapticsManager.scan();
+        }
+
+        if (!hasPermissions(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,},
+                    1);
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        hapticPlayer.stop();
+        bhapticsManager.dispose();
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.scan_button) {
-            hapticPlayer.startScan();
+            if (bhapticsManager.isScanning()) {
+                bhapticsManager.stopScan();
+            } else {
+                bhapticsManager.scan();
+            }
+
+        } else if (v.getId() == R.id.ping_button) {
+            bhapticsManager.pingAll();
         } else if (v.getId() == R.id.drawing_button) {
             startActivityForResult(new Intent(this, DrawingActivity.class), 1);
         } else if (v.getId() == R.id.tact_file_button) {
