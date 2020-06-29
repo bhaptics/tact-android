@@ -63,33 +63,39 @@ public class ListViewAdapter extends BaseAdapter {
             return convertView;
         }
 
-        final BhapticsDevice bhapticsDevice = data.get(position);
-        TextView deviceName = convertView.findViewById(R.id.device_name);
-        deviceName.setText(bhapticsDevice.getDeviceName());
+        try {
 
-        TextView devicePosition = convertView.findViewById(R.id.device_position);
-        devicePosition.setText(bhapticsDevice.getPosition().toString());
+            final BhapticsDevice bhapticsDevice = data.get(position);
+            TextView deviceName = convertView.findViewById(R.id.device_name);
+            deviceName.setText(bhapticsDevice.getDeviceName());
 
-        TextView connection = convertView.findViewById(R.id.device_connection);
-        connection.setText(bhapticsDevice.getConnectionStatus().toString());
-        Button button = convertView.findViewById(R.id.device_button);
+            TextView devicePosition = convertView.findViewById(R.id.device_position);
+            devicePosition.setText(bhapticsDevice.getPosition().toString());
 
-        if (bhapticsDevice.isPaired()) {
-            button.setText("Unpair");
-        } else {
-            button.setText("Pair");
-        }
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, "onClick: ");
-                if (bhapticsDevice.isPaired()) {
-                    bhapticsManager.unpair(bhapticsDevice.getAddress());
-                } else {
-                    bhapticsManager.pair(bhapticsDevice.getAddress());
-                }
+            TextView connection = convertView.findViewById(R.id.device_connection);
+            connection.setText(bhapticsDevice.getConnectionStatus().toString());
+            Button button = convertView.findViewById(R.id.device_button);
+
+            if (bhapticsDevice.isPaired()) {
+                button.setText("Unpair");
+            } else {
+                button.setText("Pair");
             }
-        });
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i(TAG, "onClick: ");
+                    if (bhapticsDevice.isPaired()) {
+                        bhapticsManager.unpair(bhapticsDevice.getAddress());
+                    } else {
+                        bhapticsManager.pair(bhapticsDevice.getAddress());
+                    }
+                }
+            });
+        } catch (Exception e) {
+
+        }
+
 
 
 
