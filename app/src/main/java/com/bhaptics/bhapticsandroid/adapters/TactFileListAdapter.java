@@ -34,7 +34,7 @@ public class TactFileListAdapter  extends BaseAdapter {
         files = FileUtils.listFile(context, tacFileFolder);
 
         for (TactFile file : files) {
-            hapticPlayer.register(file.getName(), file.getContent());
+            hapticPlayer.registerProject(file.getName(), file.getContent());
         }
     }
 
