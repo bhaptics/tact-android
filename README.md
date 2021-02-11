@@ -3,55 +3,25 @@
 * Download app-release-unsigned.apk file (https://github.com/bhaptics/tact-android/releases)
 * Video Link : https://youtu.be/NZHA9KCstEk
 
-### How to use
-1. put tact-release.aar (https://github.com/bhaptics/tact-android/releases) to your library folder(app/libs)
+### Documentation
+  * [User guide](docs/GettingStarted.md): This guide contains examples on how to use bHaptics android SDK in your code.
+  * [Change log](CHANGELOG.md): Changes in the recent versions
 
-2. Add tact library in your project (app/build.gradle)
+### License
+tact-java is released under the [Apache 2.0 license](LICENSE).
+
 ```
-dependencies {
-    api(name: 'tact-release', ext: 'aar')
-}
-```
+Copyright 2015~2021 bHaptics Inc.
 
-3. AndroidManifest.xml (app/src/main/AndroidManifest.xml)
-* give permission for the bluetooth connection
-```
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-```
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
+    http://www.apache.org/licenses/LICENSE-2.0
 
-4. How to user NativeHapticPlayer in Activity (LobbyActivity.java)
-```
-NativeHapticPlayer hapticPlayer = NativeHapticPlayer.getInstance(this);
-```
-
-* start after getting permissions
-```
-        if (!hasPermissions(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
-            // Permission is not granted
-            Log.e(TAG, "onResume: permission ACCESS_FINE_LOCATION"  );
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    1);
-        } else {
-            hapticPlayer.start();
-        }
-```
-
-5. Use NativeHapticPlayer
-
-```java
-// register tact file (VestDemoActivity)
- hapticPlayer.register(fileKey, fileContent);
-
-// play tact file (VestDemoActivity)
-hapticPlayer.submit(fileKey);
-
-// to turnOff
-hapticPlayer.turnOff(fileKey);
-hapticPlayer.turnOffAll();
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ```
