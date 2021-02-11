@@ -79,7 +79,9 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
 
         for (int index = 0; index < files.size(); index++) {
             arraySpinner[index] = files.get(index).getName();
-            hapticPlayer.register(files.get(index).getName(), files.get(index).getContent());
+            String key = files.get(index).getName();
+            String tactFileString = files.get(index).getContent();
+            hapticPlayer.registerProject(key, tactFileString);
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,

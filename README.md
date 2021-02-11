@@ -2,16 +2,6 @@
 ### Example App Demo 
 * Download app-release-unsigned.apk file (https://github.com/bhaptics/tact-android/releases)
 * Video Link : https://youtu.be/NZHA9KCstEk
-* Connectivity status
-
-![Image](./docs/lobby.png)
-
-* Drawing example
-
-* tact file example
-
-![Image](./docs/tact_file.png)
-
 
 ### How to use
 1. put tact-release.aar (https://github.com/bhaptics/tact-android/releases) to your library folder(app/libs)
@@ -30,18 +20,6 @@ dependencies {
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-```
-
-* register Service 
-```
-        <service android:name="com.bhaptics.tact.ble.BhapticsService">
-            <intent-filter>
-                <action android:name="com.bhaptics.player.Service" />
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </service>
 ```
 
 
