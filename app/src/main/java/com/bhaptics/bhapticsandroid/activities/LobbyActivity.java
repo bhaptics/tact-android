@@ -12,11 +12,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.bhaptics.bhapticsandroid.BhapticsModule;
 import com.bhaptics.bhapticsandroid.R;
 import com.bhaptics.bhapticsandroid.adapters.ListViewAdapter;
 import com.bhaptics.bhapticsmanger.BhapticsManager;
 import com.bhaptics.bhapticsmanger.BhapticsManagerCallback;
+import com.bhaptics.bhapticsmanger.BhapticsModule;
 import com.bhaptics.commons.model.BhapticsDevice;
 
 import java.util.List;

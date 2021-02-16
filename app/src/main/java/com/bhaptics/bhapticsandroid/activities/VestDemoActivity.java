@@ -12,10 +12,10 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.bhaptics.bhapticsandroid.BhapticsModule;
 import com.bhaptics.bhapticsandroid.models.TactFile;
 import com.bhaptics.bhapticsandroid.utils.FileUtils;
 import com.bhaptics.bhapticsandroid.R;
+import com.bhaptics.bhapticsmanger.BhapticsModule;
 import com.bhaptics.bhapticsmanger.HapticPlayer;
 
 import java.util.List;

@@ -10,10 +10,10 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bhaptics.bhapticsandroid.BhapticsModule;
 import com.bhaptics.bhapticsandroid.activities.LobbyActivity;
 import com.bhaptics.bhapticsandroid.R;
 import com.bhaptics.bhapticsmanger.BhapticsManager;
+import com.bhaptics.bhapticsmanger.BhapticsModule;
 import com.bhaptics.commons.model.BhapticsDevice;
 
 import java.util.List;
