@@ -1,10 +1,12 @@
 ## How to setup in your project
 
-### Download aar files
+### Download and extract aar files
 * You can download aar files [here](https://github.com/bhaptics/tact-android/releases)
+* Then extract aar files to your app/libs files
 
 ### Import aar files to your project.
 * open up your (app/build.gradle)
+* Add aar file dependency like below
 ```
 
 dependencies {

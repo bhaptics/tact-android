@@ -11,11 +11,9 @@ import android.widget.TextView;
 
 import com.bhaptics.bhapticsandroid.BhapticsModule;
 import com.bhaptics.bhapticsandroid.R;
+import com.bhaptics.bhapticsandroid.models.TactFile;
 import com.bhaptics.bhapticsandroid.utils.FileUtils;
 import com.bhaptics.bhapticsmanger.HapticPlayer;
-import com.bhaptics.commons.model.RotationOption;
-import com.bhaptics.commons.model.ScaleOption;
-import com.bhaptics.commons.model.TactFile;
 
 import java.util.List;
 
@@ -34,7 +32,7 @@ public class TactFileListAdapter  extends BaseAdapter {
         files = FileUtils.listFile(context, tacFileFolder);
 
         for (TactFile file : files) {
-            hapticPlayer.registerProject(file.getName(), file.getContent());
+            hapticPlayer.registerProject(file.getFileName(), file.getContent());
         }
     }
 
@@ -63,14 +61,14 @@ public class TactFileListAdapter  extends BaseAdapter {
             playButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    hapticPlayer.submitForVest(tactFile.getName(), new RotationOption(0, 0), new ScaleOption(1, 1));
+                    hapticPlayer.submitRegistered(tactFile.getFileName());
                 }
             });
         }
 
 
         TextView deviceName = convertView.findViewById(R.id.file_name);
-        deviceName.setText(tactFile.getName());
+        deviceName.setText(tactFile.getFileName());
         return convertView;
     }
 }
