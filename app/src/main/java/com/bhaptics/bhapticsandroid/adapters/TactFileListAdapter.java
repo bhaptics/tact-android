@@ -9,10 +9,10 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bhaptics.bhapticsandroid.BhapticsModule;
 import com.bhaptics.bhapticsandroid.R;
 import com.bhaptics.bhapticsandroid.models.TactFile;
 import com.bhaptics.bhapticsandroid.utils.FileUtils;
+import com.bhaptics.bhapticsmanger.BhapticsModule;
 import com.bhaptics.bhapticsmanger.HapticPlayer;
 
 import java.util.List;

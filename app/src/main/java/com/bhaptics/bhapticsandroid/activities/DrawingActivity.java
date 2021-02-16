@@ -15,8 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.bhaptics.bhapticsandroid.BhapticsModule;
 import com.bhaptics.bhapticsandroid.R;
+import com.bhaptics.bhapticsmanger.BhapticsModule;
 import com.bhaptics.bhapticsmanger.HapticPlayer;
 import com.bhaptics.commons.model.PathPoint;
 import com.bhaptics.commons.model.PositionType;
@@ -146,10 +146,10 @@ public class DrawingActivity extends Activity implements View.OnClickListener {
             hapticPlayer.submitPath("VestBack", PositionType.VestBack,
                     Arrays.asList(new PathPoint(xNormalized, yNormalized, 100)), 1000);
 
-            hapticPlayer.submitPath("Left", PositionType.Left,
+            hapticPlayer.submitPath("Left", PositionType.ForearmL,
                     Arrays.asList(new PathPoint(xNormalized, yNormalized, 100)), 1000);
 
-            hapticPlayer.submitPath("Right", PositionType.Right,
+            hapticPlayer.submitPath("Right", PositionType.ForearmR,
                     Arrays.asList(new PathPoint(xNormalized, yNormalized, 100)), 1000);
         }
 
@@ -163,7 +163,10 @@ public class DrawingActivity extends Activity implements View.OnClickListener {
             mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
             invalidate();
 
-            hapticPlayer.turnOffAll();
+//            hapticPlayer.turnOffAll();
+
+            hapticPlayer.turnOff("VestFront");
+            hapticPlayer.turnOff("VestBack");
         }
 
         @Override
