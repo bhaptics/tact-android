@@ -13,12 +13,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bhaptics.bhapticsandroid.BhapticsModule;
+import com.bhaptics.bhapticsandroid.models.TactFile;
 import com.bhaptics.bhapticsandroid.utils.FileUtils;
 import com.bhaptics.bhapticsandroid.R;
 import com.bhaptics.bhapticsmanger.HapticPlayer;
-import com.bhaptics.commons.model.RotationOption;
-import com.bhaptics.commons.model.ScaleOption;
-import com.bhaptics.commons.model.TactFile;
 
 import java.util.List;
 
@@ -78,8 +76,8 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
         String[] arraySpinner = new String[files.size()];
 
         for (int index = 0; index < files.size(); index++) {
-            arraySpinner[index] = files.get(index).getName();
-            String key = files.get(index).getName();
+            arraySpinner[index] = files.get(index).getFileName();
+            String key = files.get(index).getFileName();
             String tactFileString = files.get(index).getContent();
             hapticPlayer.registerProject(key, tactFileString);
         }
@@ -105,7 +103,9 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
                 backImage.setVisibility(View.GONE);
             }
         } else if (v.getId() == R.id.play_button) {
-            hapticPlayer.submit(tactFileSpinner.getSelectedItem().toString());
+            String key = tactFileSpinner.getSelectedItem().toString();
+            Log.e(TAG, "onClick: " + intensity + ", " + duration );
+            hapticPlayer.submitRegistered(key, key, intensity, duration, 0, 0);
         }
     }
 
@@ -128,14 +128,21 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
                 float offsetY = -y + 0.5f;
                 if (isFront) {
                     float offsetX = (-x + 0.5f) * 0.3f * 360f;
-                    hapticPlayer.submitForVest(tactFileSpinner.getSelectedItem().toString(),
-                            new RotationOption(offsetX  , offsetY),
-                            new ScaleOption(intensity, duration));
+                    hapticPlayer.submitRegistered(
+                            tactFileSpinner.getSelectedItem().toString(),
+                            tactFileSpinner.getSelectedItem().toString(),
+                            intensity, duration,
+                            offsetX  , offsetY
+                            );
                 } else {
-                    hapticPlayer.submitForVest(tactFileSpinner.getSelectedItem().toString(),
-                            new RotationOption((x - 0.5f) * 0.3f * 360f + 180f  , offsetY),
-                            new ScaleOption(intensity, duration));
+                    hapticPlayer.submitRegistered(
+                            tactFileSpinner.getSelectedItem().toString(),
+                            tactFileSpinner.getSelectedItem().toString(),
+                            intensity, duration,
+                            (x - 0.5f) * 0.3f * 360f + 180f, offsetY);
                 }
+
+                Log.e(TAG, "onTouch: " + isFront + ", " + x + ", " + y);
 
 
                 break;

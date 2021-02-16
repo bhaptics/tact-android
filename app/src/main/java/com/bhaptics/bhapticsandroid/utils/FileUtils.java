@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.bhaptics.bhapticsandroid.adapters.TactFileListAdapter;
-import com.bhaptics.commons.model.TactFile;
+import com.bhaptics.bhapticsandroid.models.TactFile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,8 +29,7 @@ public class FileUtils {
                 Log.e(TAG, "listFile: " + tactFile + ", " + content);
 
                 if (content != null) {
-                    TactFile file = new TactFile(tactFile, content);
-                    files.add(file);
+                    files.add(new TactFile(tactFile, content));
                 }
 
             }

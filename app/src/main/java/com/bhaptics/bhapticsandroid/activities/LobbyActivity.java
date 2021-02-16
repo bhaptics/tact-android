@@ -17,7 +17,6 @@ import com.bhaptics.bhapticsandroid.R;
 import com.bhaptics.bhapticsandroid.adapters.ListViewAdapter;
 import com.bhaptics.bhapticsmanger.BhapticsManager;
 import com.bhaptics.bhapticsmanger.BhapticsManagerCallback;
-import com.bhaptics.bhapticsmanger.PlayerResponse;
 import com.bhaptics.commons.model.BhapticsDevice;
 
 import java.util.List;
@@ -76,7 +75,7 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
             }
 
             @Override
-            public void onChangeResponse(PlayerResponse playerResponse) { }
+            public void onChangeResponse() { }
 
             @Override
             public void onConnect(String s) { }
