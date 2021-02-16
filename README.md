@@ -4,6 +4,7 @@
 * [Video Link](https://youtu.be/NZHA9KCstEk)
 
 ### Documentation
+  * [How to Install](docs/HowToInstall.md)
   * [User guide](docs/GettingStarted.md): This guide contains examples on how to use bHaptics android SDK in your code.
   * [Change log](CHANGELOG.md): Changes in the recent versions
 
