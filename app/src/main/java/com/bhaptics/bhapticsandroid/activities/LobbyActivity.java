@@ -123,7 +123,7 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        bhapticsManager.dispose();
+        BhapticsModule.destroy();
     }
 
     @Override
