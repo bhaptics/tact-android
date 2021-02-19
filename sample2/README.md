@@ -19,7 +19,7 @@
 
 ### Initializing and destroying (MainActivity.java)
 ```java
- @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         ...
         BhapticsModule.initialize(this);
@@ -57,8 +57,11 @@
     }
 
     private void requestPermission() {
-        PermissionUtils.requestBluetoothPermission(this, 100);
-        PermissionUtils.requestFilePermission(this, 101);
+        ActivityCompat.requestPermissions(this,
+        new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,},
+        1);
     }
 
     private void scanIfNeeded() {

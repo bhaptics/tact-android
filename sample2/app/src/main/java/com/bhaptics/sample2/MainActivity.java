@@ -2,8 +2,12 @@ package com.bhaptics.sample2;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.util.Log;
 
 import com.bhaptics.bhapticsmanger.BhapticsManager;
 import com.bhaptics.bhapticsmanger.BhapticsModule;
@@ -17,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +31,17 @@ public class MainActivity extends AppCompatActivity {
         BhapticsModule.initialize(this);
 
         checkPermissionAndRequestIfNeeded();
+
+
+        new CountDownTimer(300000, 2000) {
+
+            public void onTick(long millisUntilFinished) {
+                playHaptic();
+            }
+
+            public void onFinish() {
+            }
+        }.start();
     }
 
     @Override
@@ -40,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (hasPermission()) {
+            BhapticsModule.getBhapticsManager().refreshPairingInfo();
             scanIfNeeded();
         }
     }
@@ -64,8 +81,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestPermission() {
-        PermissionUtils.requestBluetoothPermission(this, 100);
-        PermissionUtils.requestFilePermission(this, 101);
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,},
+                1);
     }
 
     private void scanIfNeeded() {
