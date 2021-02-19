@@ -18,7 +18,7 @@
 ```
 
 ### Initializing and destroying (MainActivity.java)
-```
+```java
  @Override
     protected void onCreate(Bundle savedInstanceState) {
         ...
@@ -34,7 +34,7 @@
 
 
 ### Check and Request Permission in the code. (MainActivity.java)
-```
+```java
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +83,7 @@
 
 ### Now Play Haptic
 * For more example, please check this [doc](../docs/HapticPlayer.md)
-```
+```java
     private void playHaptic() {
         HapticPlayer player = BhapticsModule.getHapticPlayer();
         player.submitDot("play", PositionType.VestFront, Arrays.asList(new DotPoint(0, 100)), 1000);
