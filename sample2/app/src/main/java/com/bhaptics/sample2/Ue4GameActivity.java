@@ -2,19 +2,26 @@ package com.bhaptics.sample2;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 
 /////////////////
 import com.bhaptics.bhapticsmanger.BhapticsManager;
+import com.bhaptics.bhapticsmanger.DefaultHapticStreamer;
 import com.bhaptics.bhapticsmanger.HapticPlayer;
+import com.bhaptics.bhapticsmanger.HapticStreamer;
+import com.bhaptics.bhapticsmanger.StreamHost;
 import com.bhaptics.commons.model.BhapticsDevice;
 import com.bhaptics.commons.model.PositionType;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 ///////////////////////////////
 
@@ -23,12 +30,44 @@ public class Ue4GameActivity extends Activity {
 
     private BhapticsManager bhapticsManager;
     private HapticPlayer player;
+    private HapticStreamer hapticStreamer = null;
     private String LatestDeviceStatus = "";
     private static final String TAG = "HAPTIC_WRAPPER";
 
     public native void nativeOnDeviceFound(String deviceListString);
     public native void nativeOnChangeScanState();
     public native void nativeOnChangeResponse();
+
+
+
+    //Helper Functions
+    private static String StreamHostToJsonString(Collection<StreamHost> hosts) {
+        JSONArray jsonArray = new JSONArray();
+
+        for (StreamHost host : hosts) {
+            JSONObject obj = StreamHostToJsonObject(host);
+
+            if (obj == null) {
+                android.util.Log.i(TAG, "StreamHostToJsonString: failed to parse. " + host);
+                continue;
+            }
+            jsonArray.put(obj);
+        }
+
+        return jsonArray.toString();
+    }
+
+    private static JSONObject StreamHostToJsonObject(StreamHost host) {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("Ip", host.getIp());
+            obj.put("IsConnected", host.isConnected());
+            return obj;
+        } catch (JSONException e) {
+            android.util.Log.d(TAG, "StreamHostToJsonObject: " + e.getMessage());
+        }
+        return null;
+    }
 
     //Helper Functions
     private static String DeviceToJsonString(List<BhapticsDevice> devices) {
@@ -71,6 +110,7 @@ public class Ue4GameActivity extends Activity {
 
         bhapticsManager.scan();
     }
+
     public void AndroidThunkJava_StopScan() {
         bhapticsManager.stopScan();
     }
@@ -162,6 +202,70 @@ public class Ue4GameActivity extends Activity {
         return player.isAnythingPlaying();
     }
 
+    public void AndroidThunkJava_StartStream(final boolean connectDiscovered) {
+        if (hapticStreamer == null) {
+            hapticStreamer = new DefaultHapticStreamer();
+            hapticStreamer.setCallback(new HapticStreamer.HapticStreamerCallback() {
+                @Override
+                public void onDiscover(String s) {
+                    if (connectDiscovered) {
+                        hapticStreamer.connect(s);
+                    }
+                }
+
+                @Override
+                public void onConnect(String s) {
+
+                }
+
+                @Override
+                public void onDisconnect(String s) {
+
+                }
+            });
+
+            hapticStreamer.refreshCandidateIps();
+        }
+    }
+
+    public void AndroidThunkJava_StopStream() {
+        if (hapticStreamer == null) {
+            android.util.Log.d(TAG, "stopStream(): hapticStreamer not initialized.");
+            return;
+        }
+
+        hapticStreamer.dispose();
+        hapticStreamer = null;
+    }
+
+    public void AndroidThunkJava_RefreshStreamHosts() {
+        if (hapticStreamer == null) {
+            android.util.Log.d(TAG, "refreshHost(): hapticStreamer not initialized.");
+            return;
+        }
+
+        hapticStreamer.refreshCandidateIps();
+    }
+
+    public String AndroidThunkJava_GetStreamHosts() {
+        if (hapticStreamer == null) {
+            android.util.Log.d(TAG, "GetStreamHosts(): hapticStreamer not initialized.");
+            return "[]";
+        }
+
+
+        return StreamHostToJsonString(hapticStreamer.getHosts());
+    }
+
+    public void AndroidThunkJava_ConnectStreamHost(String host) {
+        if (hapticStreamer == null) {
+            android.util.Log.d(TAG, "Connect(): hapticStreamer not initialized.");
+            return;
+        }
+
+        hapticStreamer.connect(host);
+    }
+
 
 
     @Override
@@ -186,6 +290,23 @@ public class Ue4GameActivity extends Activity {
             @Override
             public void onChangeResponse() {
                 nativeOnChangeResponse();
+
+                if (hapticStreamer != null && hapticStreamer.canStream()) {
+                    List<PositionType> pos = Arrays.asList(
+                            PositionType.Head,
+                            PositionType.VestFront,
+                            PositionType.VestBack,
+                            PositionType.ForearmL,
+                            PositionType.ForearmR);
+                    try {
+                        for (PositionType po : pos) {
+                            byte[] positionStatus = player.getPositionStatus(po);
+                            hapticStreamer.stream(po, positionStatus);
+                        }
+                    } catch (Exception e) {
+                        android.util.Log.i(TAG, "onChangeResponse: ", e);
+                    }
+                }
             }
 
             @Override
@@ -197,6 +318,5 @@ public class Ue4GameActivity extends Activity {
                 android.util.Log.i("MAIN ACTIVITY", "onDisconnect: " + address );
             }
         });
-
     }
 }
