@@ -15,9 +15,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.bhaptics.bhapticsandroid.App;
 import com.bhaptics.bhapticsandroid.R;
 import com.bhaptics.bhapticsmanger.BhapticsModule;
 import com.bhaptics.bhapticsmanger.HapticPlayer;
+import com.bhaptics.bhapticsmanger.SdkRequestHandler;
 import com.bhaptics.commons.model.PathPoint;
 import com.bhaptics.commons.model.PositionType;
 
@@ -28,7 +30,7 @@ public class DrawingActivity extends Activity implements View.OnClickListener {
 
     private Button backButton;
 
-    private HapticPlayer hapticPlayer;
+    private SdkRequestHandler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +42,10 @@ public class DrawingActivity extends Activity implements View.OnClickListener {
         backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(this);
 
-        hapticPlayer = BhapticsModule.getHapticPlayer();
         DrawingView dv = new DrawingView(this);
         linearLayout.addView(dv);
+
+        handler = App.getHandler(getApplicationContext());
     }
 
     @Override
@@ -140,17 +143,15 @@ public class DrawingActivity extends Activity implements View.OnClickListener {
 
 
             Log.e(TAG, "touch_move: " + pathX + ", " + pathY  + ", " + xNormalized + " , " + yNormalized);
-            hapticPlayer.submitPath("VestFront", PositionType.VestFront,
-                    Arrays.asList(new PathPoint(xNormalized, yNormalized, 100)), 1000);
+            float[] xArr = {xNormalized};
+            float[] yArr = {yNormalized};
+            int[] intArr = {100};
 
-            hapticPlayer.submitPath("VestBack", PositionType.VestBack,
-                    Arrays.asList(new PathPoint(xNormalized, yNormalized, 100)), 1000);
 
-            hapticPlayer.submitPath("Left", PositionType.ForearmL,
-                    Arrays.asList(new PathPoint(xNormalized, yNormalized, 100)), 1000);
-
-            hapticPlayer.submitPath("Right", PositionType.ForearmR,
-                    Arrays.asList(new PathPoint(xNormalized, yNormalized, 100)), 1000);
+            handler.submitPath("VestFront", "VestFront", xArr, yArr, intArr, 1000);
+            handler.submitPath("VestBack", "VestBack", xArr, yArr, intArr, 1000);
+            handler.submitPath("ForearmL", "ForearmL", xArr, yArr, intArr, 1000);
+            handler.submitPath("ForearmR", "ForearmR", xArr, yArr, intArr, 1000);
         }
 
         private void touch_up() {
@@ -163,10 +164,10 @@ public class DrawingActivity extends Activity implements View.OnClickListener {
             mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
             invalidate();
 
-//            hapticPlayer.turnOffAll();
-
-            hapticPlayer.turnOff("VestFront");
-            hapticPlayer.turnOff("VestBack");
+            handler.turnOff("VestFront");
+            handler.turnOff("VestBack");
+            handler.turnOff("ForearmL");
+            handler.turnOff("ForearmR");
         }
 
         @Override

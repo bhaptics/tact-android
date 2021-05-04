@@ -12,11 +12,13 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.bhaptics.bhapticsandroid.App;
 import com.bhaptics.bhapticsandroid.models.TactFile;
 import com.bhaptics.bhapticsandroid.utils.FileUtils;
 import com.bhaptics.bhapticsandroid.R;
 import com.bhaptics.bhapticsmanger.BhapticsModule;
 import com.bhaptics.bhapticsmanger.HapticPlayer;
+import com.bhaptics.bhapticsmanger.SdkRequestHandler;
 
 import java.util.List;
 
@@ -29,13 +31,16 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
 
     private Spinner tactFileSpinner;
 
-    private HapticPlayer hapticPlayer;
-
     private float duration, intensity;
+
+    private SdkRequestHandler sdkRequestHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sdkRequestHandler = App.getHandler(getApplicationContext());
+
         setContentView(R.layout.activity_vest_demo);
 
         backButton = findViewById(R.id.back_button);
@@ -67,8 +72,6 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
         frontImage.setOnTouchListener(this);
         backImage.setOnTouchListener(this);
 
-        hapticPlayer = BhapticsModule.getHapticPlayer();
-
         tactFileSpinner = (Spinner) findViewById(R.id.tactot_feedback_spinner);
 
         String tactotFileFolder = "tactFiles/tactotDemo";
@@ -79,7 +82,7 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
             arraySpinner[index] = files.get(index).getFileName();
             String key = files.get(index).getFileName();
             String tactFileString = files.get(index).getContent();
-            hapticPlayer.registerProject(key, tactFileString);
+            sdkRequestHandler.register(key, tactFileString);
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
@@ -105,7 +108,7 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
         } else if (v.getId() == R.id.play_button) {
             String key = tactFileSpinner.getSelectedItem().toString();
             Log.e(TAG, "onClick: " + intensity + ", " + duration );
-            hapticPlayer.submitRegistered(key, key, intensity, duration, 0, 0);
+            sdkRequestHandler.submitRegistered(key, key, intensity, duration, 0, 0);
         }
     }
 
@@ -128,14 +131,14 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
                 float offsetY = -y + 0.5f;
                 if (isFront) {
                     float offsetX = (-x + 0.5f) * 0.3f * 360f;
-                    hapticPlayer.submitRegistered(
+                    sdkRequestHandler.submitRegistered(
                             tactFileSpinner.getSelectedItem().toString(),
                             tactFileSpinner.getSelectedItem().toString(),
                             intensity, duration,
                             offsetX  , offsetY
                             );
                 } else {
-                    hapticPlayer.submitRegistered(
+                    sdkRequestHandler.submitRegistered(
                             tactFileSpinner.getSelectedItem().toString(),
                             tactFileSpinner.getSelectedItem().toString(),
                             intensity, duration,
