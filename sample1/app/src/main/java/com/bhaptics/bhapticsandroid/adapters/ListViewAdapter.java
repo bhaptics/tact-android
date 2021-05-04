@@ -10,11 +10,14 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bhaptics.bhapticsandroid.App;
 import com.bhaptics.bhapticsandroid.activities.LobbyActivity;
 import com.bhaptics.bhapticsandroid.R;
 import com.bhaptics.bhapticsmanger.BhapticsManager;
 import com.bhaptics.bhapticsmanger.BhapticsModule;
+import com.bhaptics.bhapticsmanger.SdkRequestHandler;
 import com.bhaptics.commons.model.BhapticsDevice;
+import com.bhaptics.service.SimpleBhapticsDevice;
 
 import java.util.List;
 
@@ -22,20 +25,19 @@ public class ListViewAdapter extends BaseAdapter {
     public static final String TAG = LobbyActivity.class.getSimpleName();
 
     private LayoutInflater inflater;
-    private List<BhapticsDevice> data;
+    private List<SimpleBhapticsDevice> data;
     private int layout;
+
+    private SdkRequestHandler sdkRequestHandler;
 
     private final Activity context;
 
-    private BhapticsManager bhapticsManager;
-
-    public ListViewAdapter(final Activity context, List<BhapticsDevice> defaultDevices) {
+    public ListViewAdapter(final Activity context, List<SimpleBhapticsDevice> defaultDevices) {
         this.context = context;
         this.inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.data = defaultDevices;
         this.layout = R.layout.list_item_bhaptics_device;
-
-        bhapticsManager = BhapticsModule.getBhapticsManager();
+        sdkRequestHandler = App.getHandler(context);
     }
 
     @Override
@@ -63,15 +65,15 @@ public class ListViewAdapter extends BaseAdapter {
             return convertView;
         }
 
-        final BhapticsDevice bhapticsDevice = data.get(position);
+        final SimpleBhapticsDevice bhapticsDevice = data.get(position);
         TextView deviceName = convertView.findViewById(R.id.device_name);
         deviceName.setText(bhapticsDevice.getDeviceName());
 
         TextView devicePosition = convertView.findViewById(R.id.device_position);
-        devicePosition.setText(bhapticsDevice.getPosition().toString());
+        devicePosition.setText(SimpleBhapticsDevice.positionToString(bhapticsDevice.getPosition()));
 
         TextView connection = convertView.findViewById(R.id.device_connection);
-        connection.setText(bhapticsDevice.getConnectionStatus().toString());
+        connection.setText(bhapticsDevice.isConnected() ? "Connected" : "Disconnected");
         Button button = convertView.findViewById(R.id.device_button);
 
         if (bhapticsDevice.isPaired()) {
@@ -84,9 +86,9 @@ public class ListViewAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Log.i(TAG, "onClick: ");
                 if (bhapticsDevice.isPaired()) {
-                    bhapticsManager.unpair(bhapticsDevice.getAddress());
+                    sdkRequestHandler.unpair(bhapticsDevice.getAddress());
                 } else {
-                    bhapticsManager.pair(bhapticsDevice.getAddress());
+                    sdkRequestHandler.pair(bhapticsDevice.getAddress());
                 }
             }
         });
@@ -96,7 +98,7 @@ public class ListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void onChangeListUpdate(final List<BhapticsDevice> devices) {
+    public void onChangeListUpdate(final List<SimpleBhapticsDevice> devices) {
         context.runOnUiThread(new Runnable() {
             @Override
             public void run() {

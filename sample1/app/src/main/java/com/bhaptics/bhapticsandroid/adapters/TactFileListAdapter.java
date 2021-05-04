@@ -9,30 +9,30 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bhaptics.bhapticsandroid.App;
 import com.bhaptics.bhapticsandroid.R;
 import com.bhaptics.bhapticsandroid.models.TactFile;
 import com.bhaptics.bhapticsandroid.utils.FileUtils;
-import com.bhaptics.bhapticsmanger.BhapticsModule;
-import com.bhaptics.bhapticsmanger.HapticPlayer;
+import com.bhaptics.bhapticsmanger.SdkRequestHandler;
 
 import java.util.List;
 
 public class TactFileListAdapter  extends BaseAdapter {
-    private HapticPlayer hapticPlayer;
 
     private LayoutInflater inflater;
     private int layout;
     private List<TactFile> files;
+    private SdkRequestHandler sdkRequestHandler;
 
     public TactFileListAdapter(Activity context, String tacFileFolder) {
         this.inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.layout = R.layout.list_item_tact_file;
 
-        hapticPlayer = BhapticsModule.getHapticPlayer();
         files = FileUtils.listFile(context, tacFileFolder);
+        sdkRequestHandler = App.getHandler(context);
 
         for (TactFile file : files) {
-            hapticPlayer.registerProject(file.getFileName(), file.getContent());
+            sdkRequestHandler.register(file.getFileName(), file.getContent());
         }
     }
 
@@ -61,7 +61,7 @@ public class TactFileListAdapter  extends BaseAdapter {
             playButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    hapticPlayer.submitRegistered(tactFile.getFileName());
+                    sdkRequestHandler.submitRegistered(tactFile.getFileName(), tactFile.getFileName(), 1f, 1f, 0, 0);
                 }
             });
         }

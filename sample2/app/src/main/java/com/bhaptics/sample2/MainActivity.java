@@ -9,27 +9,23 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 
-import com.bhaptics.bhapticsmanger.BhapticsManager;
-import com.bhaptics.bhapticsmanger.BhapticsModule;
-import com.bhaptics.bhapticsmanger.HapticPlayer;
+import com.bhaptics.bhapticsmanger.SdkRequestHandler;
 import com.bhaptics.commons.PermissionUtils;
-import com.bhaptics.commons.model.BhapticsDevice;
-import com.bhaptics.commons.model.DotPoint;
-import com.bhaptics.commons.model.PositionType;
+import com.bhaptics.service.SimpleBhapticsDevice;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
+
+    private SdkRequestHandler sdkRequestHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BhapticsModule.initialize(this);
-
+        sdkRequestHandler = new SdkRequestHandler(getApplicationContext(), "appName");
         checkPermissionAndRequestIfNeeded();
 
 
@@ -47,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        BhapticsModule.destroy();
+        sdkRequestHandler.quit();
     }
 
     @Override
@@ -56,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (hasPermission()) {
-            BhapticsModule.getBhapticsManager().refreshPairingInfo();
             scanIfNeeded();
         }
     }
@@ -74,41 +69,35 @@ public class MainActivity extends AppCompatActivity {
 
     private void playHaptic() {
         Log.i(TAG, "playHaptic: ");
-        HapticPlayer player = BhapticsModule.getHapticPlayer();
-
-        if (BhapticsModule.getBhapticsManager().isDeviceConnected(BhapticsManager.DeviceType.Head)) {
-            Log.i(TAG, "playHaptic: head connected");
-            player.submitDot("play", PositionType.Head, Arrays.asList(new DotPoint(0, 100)), 1000);
-        } else {
-            Log.i(TAG, "playHaptic: head not connected");
-            player.submitDot("play", PositionType.VestFront, Arrays.asList(new DotPoint(0, 100)), 1000);
-        }
-        player.submitDot("play_ForearmL", PositionType.ForearmL, Arrays.asList(new DotPoint(0, 100)), 1000);
-        player.submitDot("play_ForearmR", PositionType.ForearmR, Arrays.asList(new DotPoint(0, 100)), 1000);
+//        if (sdkRequestHandler.isDeviceConnected(BhapticsManager.DeviceType.Head)) {
+//            Log.i(TAG, "playHaptic: head connected");
+//            player.submitDot("play", PositionType.Head, Arrays.asList(new DotPoint(0, 100)), 1000);
+//        } else {
+//            Log.i(TAG, "playHaptic: head not connected");
+//            player.submitDot("play", PositionType.VestFront, Arrays.asList(new DotPoint(0, 100)), 1000);
+//        }
+//        player.submitDot("play_ForearmL", PositionType.ForearmL, Arrays.asList(new DotPoint(0, 100)), 1000);
+//        player.submitDot("play_ForearmR", PositionType.ForearmR, Arrays.asList(new DotPoint(0, 100)), 1000);
 
     }
 
     private boolean hasPermission() {
         boolean blePermission = PermissionUtils.hasBluetoothPermission(this);
-        boolean filePermission = PermissionUtils.hasFilePermissions(this);
-        return blePermission && filePermission;
+        return blePermission;
     }
 
     private void requestPermission() {
         ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,},
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,},
                 1);
     }
 
     private void scanIfNeeded() {
         Log.i(TAG, "scanIfNeeded: ");
-        BhapticsManager manager = BhapticsModule.getBhapticsManager();
 
-        List<BhapticsDevice> deviceList = manager.getDeviceList();
+        List<SimpleBhapticsDevice> deviceList = sdkRequestHandler.getDeviceList();
         boolean hasPairedDevice = false;
-        for (BhapticsDevice device : deviceList) {
+        for (SimpleBhapticsDevice device : deviceList) {
             if (device.isPaired()) {
                 hasPairedDevice = true;
                 break;
@@ -117,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (hasPairedDevice) {
             Log.i(TAG, "scan: ");
-            manager.scan();
+            sdkRequestHandler.toggleScan();
         }
     }
 }
