@@ -20,14 +20,26 @@ public class MainActivity extends AppCompatActivity {
 
     private SdkRequestHandler sdkRequestHandler;
 
+    private android.os.Handler handler = new android.os.Handler();
+    private java.lang.Runnable run = new java.lang.Runnable() {
+
+        @Override
+        public void run() {
+            handler.postDelayed(this, 500);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
+
         sdkRequestHandler = new SdkRequestHandler(getApplicationContext(), "appName");
         checkPermissionAndRequestIfNeeded();
-
+        handler.postDelayed(run, 500);
 
         new CountDownTimer(300000, 2000) {
 
