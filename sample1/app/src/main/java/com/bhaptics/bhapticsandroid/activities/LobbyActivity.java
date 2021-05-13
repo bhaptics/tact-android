@@ -5,25 +5,19 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
+import androidx.core.app.ActivityCompat;
+
 import com.bhaptics.bhapticsandroid.App;
 import com.bhaptics.bhapticsandroid.R;
 import com.bhaptics.bhapticsandroid.adapters.ListViewAdapter;
-import com.bhaptics.bhapticsmanger.BhapticsManager;
-import com.bhaptics.bhapticsmanger.BhapticsManagerCallback;
-import com.bhaptics.bhapticsmanger.BhapticsModule;
 import com.bhaptics.bhapticsmanger.SdkRequestHandler;
-import com.bhaptics.commons.model.BhapticsDevice;
 import com.bhaptics.service.SimpleBhapticsDevice;
-
-import java.util.List;
 
 public class LobbyActivity extends Activity implements View.OnClickListener {
     public static final String TAG = LobbyActivity.class.getSimpleName();
@@ -35,13 +29,12 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
 
     private SdkRequestHandler sdkRequestHandler;
 
-
-    Handler h2 = new Handler();
-    Runnable run = new Runnable() {
+    private android.os.Handler handler = new android.os.Handler();
+    private java.lang.Runnable run = new java.lang.Runnable() {
 
         @Override
         public void run() {
-            h2.postDelayed(this, 500);
+            handler.postDelayed(this, 500);
 
             if (adapter != null) {
                 adapter.onChangeListUpdate(sdkRequestHandler.getDeviceList());
@@ -56,7 +49,7 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
 
-        h2.postDelayed(run, 100);
+        handler.postDelayed(run, 100);
 
 
         sdkRequestHandler = App.getHandler(getApplicationContext());
@@ -110,7 +103,7 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        BhapticsModule.destroy();
+        sdkRequestHandler.quit();
     }
 
     @Override

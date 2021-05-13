@@ -23,7 +23,4 @@ dependencies {
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    
-    <!-- If you want bHaptics Player's pairing information please add this -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 ```

@@ -20,30 +20,32 @@ import java.util.List;
 
 
 public class Ue4GameActivity extends Activity {
-
     private SdkRequestHandler sdkRequestHandler;
-    private String LatestDeviceStatus = "";
-    private static final String TAG = "HAPTIC_WRAPPER";
-
-    public native void nativeOnDeviceFound(String deviceListString);
-    public native void nativeOnChangeScanState();
-    public native void nativeOnChangeResponse();
+    private String appName = "";
+    private static final String TAG = "bhaptics_WRAPPER";
 
     //Helper Functions
     private static String DeviceToJsonString(List<SimpleBhapticsDevice> devices) {
-        JSONArray jsonArray = new JSONArray();
+        try {
 
-        for (SimpleBhapticsDevice device : devices) {
-            JSONObject obj = DeviceToJsonObject(device);
+            JSONArray jsonArray = new JSONArray();
 
-            if (obj == null) {
-                android.util.Log.i(TAG, "toJsonString: failed to parse. " + device);
-                continue;
+            for (SimpleBhapticsDevice device : devices) {
+                JSONObject obj = DeviceToJsonObject(device);
+
+                if (obj == null) {
+                    android.util.Log.i(TAG, "toJsonString: failed to parse. " + device);
+                    continue;
+                }
+                jsonArray.put(obj);
             }
-            jsonArray.put(obj);
+
+            return jsonArray.toString();
+        } catch (Exception e) {
+            android.util.Log.e(TAG, "DeviceToJsonString: " + e.getMessage(), e);
         }
 
-        return jsonArray.toString();
+        return "[]";
     }
 
     private static JSONObject DeviceToJsonObject(SimpleBhapticsDevice device) {
@@ -51,8 +53,8 @@ public class Ue4GameActivity extends Activity {
             JSONObject obj = new JSONObject();
             obj.put("DeviceName", device.getDeviceName());
             obj.put("Address", device.getAddress());
-            obj.put("Position", device.getPosition());
-            obj.put("ConnectionStatus", device.isConnected() ? "Connected" : "Disconnected");
+            obj.put("Position", SimpleBhapticsDevice.positionToString(device.getPosition()));
+            obj.put("IsConnected", device.isConnected());
             obj.put("IsPaired", device.isPaired());
             return obj;
         } catch (JSONException e) {
@@ -62,42 +64,58 @@ public class Ue4GameActivity extends Activity {
     }
 
     //Bluetooth Functionality
-    public void AndroidThunkJava_Scan() {
-        if (!com.bhaptics.commons.PermissionUtils.hasBluetoothPermission(this)) {
-            return;
-        }
+    public boolean AndroidThunkJava_Is_legacy() {
+        return sdkRequestHandler.isLegacyMode();
+    }
+    public void AndroidThunkJava_Initialize(String appName) {
+        android.util.Log.d(TAG, "AndroidThunkJava_Initialize: " + appName);
+        this.appName = appName;
+    }
 
+    public void AndroidThunkJava_Scan() {
+        android.util.Log.d(TAG, "AndroidThunkJava_Scan() ");
         if (!sdkRequestHandler.isScanning()) {
             sdkRequestHandler.toggleScan();
         }
     }
 
     public void AndroidThunkJava_StopScan() {
+        android.util.Log.d(TAG, "AndroidThunkJava_StopScan() ");
         if (sdkRequestHandler.isScanning()) {
             sdkRequestHandler.toggleScan();
         }
     }
 
     public boolean AndroidThunkJava_IsScanning() {
+        android.util.Log.d(TAG, "AndroidThunkJava_IsScanning() ");
         return sdkRequestHandler.isScanning();
+    }
+
+    public String AndroidThunkJava_getDeviceList() {
+        android.util.Log.d(TAG, "AndroidThunkJava_getDeviceList() ");
+        return DeviceToJsonString(sdkRequestHandler.getDeviceList());
     }
 
     // Device Settings
     public void AndroidThunkJava_Pair(String address) {
+        android.util.Log.d(TAG, "AndroidThunkJava_Pair() " + address);
         sdkRequestHandler.pair(address);
     }
 
     // Pair Device with positoin
     public void AndroidThunkJava_PairFromPosition(String address, String position) {
+        android.util.Log.d(TAG, "AndroidThunkJava_Pair() " + address + ", " + position);
         sdkRequestHandler.pair(address);
         AndroidThunkJava_ChangePosition(address, position);
     }
 
     public void AndroidThunkJava_Unpair(String address) {
+        android.util.Log.d(TAG, "AndroidThunkJava_Unpair() " + address);
         sdkRequestHandler.unpair(address);
     }
 
     public void AndroidThunkJava_UnpairAll() {
+        android.util.Log.d(TAG, "AndroidThunkJava_UnpairAll() ");
         List<SimpleBhapticsDevice> deviceList = sdkRequestHandler.getDeviceList();
 
         for (SimpleBhapticsDevice device : deviceList) {
@@ -108,6 +126,7 @@ public class Ue4GameActivity extends Activity {
     }
 
     public void AndroidThunkJava_ChangePosition(String address, String position){
+        android.util.Log.d(TAG, "AndroidThunkJava_ChangePosition() " + address + ", " + position);
         int i = SimpleBhapticsDevice.stringToPosition(position);
 
         for (SimpleBhapticsDevice device : sdkRequestHandler.getDeviceList()) {
@@ -121,10 +140,12 @@ public class Ue4GameActivity extends Activity {
     }
 
     public void AndroidThunkJava_TogglePosition(String address) {
+        android.util.Log.d(TAG, "AndroidThunkJava_TogglePosition() " + address);
         sdkRequestHandler.togglePosition(address);
     }
 
     public void AndroidThunkJava_Ping(String address) {
+        android.util.Log.d(TAG, "AndroidThunkJava_Ping() " + address);
         sdkRequestHandler.ping(address);
     }
     public void AndroidThunkJava_PingAll() {
@@ -138,31 +159,38 @@ public class Ue4GameActivity extends Activity {
     }
 
     public String AndroidThunkJava_GetDeviceList() {
+        android.util.Log.d(TAG, "AndroidThunkJava_GetDeviceList() ");
         List<SimpleBhapticsDevice> deviceList = sdkRequestHandler.getDeviceList();
         return DeviceToJsonString(deviceList);
     }
 
     public boolean AndroidThunkJava_GetLatestScanStatus() {
+        android.util.Log.d(TAG, "AndroidThunkJava_GetLatestScanStatus() ");
         return sdkRequestHandler.isScanning();
     }
 
     public void AndroidThunkJava_SubmitRegistered(String key, String altKey,
                                                   float intensity, float duration,
                                                   float offsetAngleX, float offsetY) {
+        android.util.Log.d(TAG, "AndroidThunkJava_SubmitRegistered() ");
         sdkRequestHandler.submitRegistered(key, altKey, intensity, duration, offsetAngleX, offsetY);
     }
 
     void  AndroidThunkJava_SubmitDot(String key, String position, int[] indexes, int[] intensities, int duration) {
+        android.util.Log.d(TAG, "AndroidThunkJava_SubmitDot() ");
         sdkRequestHandler.submitDot(key, position, indexes, intensities, duration);
     }
     void  AndroidThunkJava_SubmitPath(String key, String position, float[] x, float[] y, int[] intensities, int duration) {
+        android.util.Log.d(TAG, "AndroidThunkJava_SubmitPath() ");
         sdkRequestHandler.submitPath(key, position, x, y, intensities, duration);
     }
 
     public void AndroidThunkJava_Register(String key, String fileStr) {
+        android.util.Log.d(TAG, "AndroidThunkJava_Register() " + key);
         sdkRequestHandler.register(key, fileStr);
     }
     public void AndroidThunkJava_RegisterReflected(String key, String fileStr) {
+        android.util.Log.d(TAG, "AndroidThunkJava_RegisterReflected() " + key);
         sdkRequestHandler.registerReflected(key, fileStr);
     }
     public void AndroidThunkJava_TurnOff(String key) {
@@ -174,16 +202,24 @@ public class Ue4GameActivity extends Activity {
     }
 
     public byte[] AndroidThunkJava_GetPositionStatus(String position) {
+        android.util.Log.d(TAG, "AndroidThunkJava_GetPositionStatus() " + position);
+        if (sdkRequestHandler == null) {
+            android.util.Log.d(TAG, "AndroidThunkJava_GetPositionStatus() null" );
+            return new byte[20];
+        }
         return  sdkRequestHandler.getPositionStatus(position);
     }
 
     public boolean AndroidThunkJava_IsRegistered(String key) {
+        android.util.Log.d(TAG, "AndroidThunkJava_IsRegistered() " + key );
         return sdkRequestHandler.isRegistered(key);
     }
     public boolean AndroidThunkJava_IsPlaying(String key) {
+        android.util.Log.d(TAG, "AndroidThunkJava_IsPlaying() " + key );
         return sdkRequestHandler.isPlaying(key);
     }
     public boolean AndroidThunkJava_IsAnythingPlaying() {
+        android.util.Log.d(TAG, "AndroidThunkJava_IsAnythingPlaying() " );
         return sdkRequestHandler.isAnythingPlaying();
     }
 
@@ -191,35 +227,6 @@ public class Ue4GameActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         sdkRequestHandler = new SdkRequestHandler(this, "appName");
-//        player = new com.bhaptics.bhapticsmanger.HapticPlayerImpl();
-//        bhapticsManager = new com.bhaptics.bhapticsmanger.BhapticsManagerImpl(this, player, new com.bhaptics.ble.PairedDeviceManagerImpl(this));
-//        bhapticsManager.addBhapticsManageCallback(new com.bhaptics.bhapticsmanger.BhapticsManagerCallback() {
-//            @Override
-//            public void onDeviceUpdate(List<com.bhaptics.commons.model.BhapticsDevice> deviceList) {
-//                LatestDeviceStatus = DeviceToJsonString(deviceList);
-//                nativeOnDeviceFound(LatestDeviceStatus);
-//            }
-//
-//            @Override
-//            public void onScanStatusChange(boolean scanning) {
-//                nativeOnChangeScanState();
-//            }
-//
-//            @Override
-//            public void onChangeResponse() {
-//                nativeOnChangeResponse();
-//            }
-//
-//            @Override
-//            public void onConnect(String address) {
-//                android.util.Log.i("MAIN_ACTIVITY", "onConnect: " + address );
-//            }
-//            @Override
-//            public void onDisconnect(String address) {
-//                android.util.Log.i("MAIN ACTIVITY", "onDisconnect: " + address );
-//            }
-//        });
     }
 }
