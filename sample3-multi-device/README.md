@@ -1,8 +1,8 @@
 ### Change index
-* Index should be 0, 1, 2, 3, 4
+* Index should be 0, 1, 2, 3, 4, ~, 9
 ```
 int newIndex = device.getIndex() + 1;
-if (newIndex >= 5) {
+if (newIndex >= 10) {
     newIndex = 0;
 }
 App.getBhapticsManager().changeIndex(device.getAddress(), newIndex);

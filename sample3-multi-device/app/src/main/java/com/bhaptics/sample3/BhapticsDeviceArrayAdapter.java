@@ -91,7 +91,7 @@ public class BhapticsDeviceArrayAdapter extends ArrayAdapter<BhapticsDevice> {
             @Override
             public void onClick(View v) {
                 int newIndex = device.getIndex() + 1;
-                if (newIndex >= 5) {
+                if (newIndex >= 10) {
                     newIndex = 0;
                 }
                 App.getBhapticsManager().changeIndex(device.getAddress(), newIndex);
