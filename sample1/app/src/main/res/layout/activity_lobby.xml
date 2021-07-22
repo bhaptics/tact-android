@@ -31,12 +31,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Tactot File with Rotation"/>
-
-        <Button
-            android:id="@+id/scan_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Scan"/>
         <Button
             android:id="@+id/ping_button"
             android:layout_width="match_parent"

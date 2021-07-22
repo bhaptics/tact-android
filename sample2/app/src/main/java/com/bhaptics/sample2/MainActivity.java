@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         sdkRequestHandler = new SdkRequestHandler(getApplicationContext(), "appName");
-        checkPermissionAndRequestIfNeeded();
         handler.postDelayed(run, 500);
 
         new CountDownTimer(300000, 2000) {
@@ -61,22 +60,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-
-        if (hasPermission()) {
-            scanIfNeeded();
-        }
-    }
-
-    private void checkPermissionAndRequestIfNeeded() {
-        
-        if(hasPermission()) {
-            Log.i(TAG, "checkPermissionAndRequestIfNeeded: scanIfNeeded() ");
-            scanIfNeeded();
-        } else {
-            Log.i(TAG, "checkPermissionAndRequestIfNeeded: requestPermission()");
-            requestPermission();
-        }
     }
 
     private void playHaptic() {
@@ -91,34 +74,5 @@ public class MainActivity extends AppCompatActivity {
 //        player.submitDot("play_ForearmL", PositionType.ForearmL, Arrays.asList(new DotPoint(0, 100)), 1000);
 //        player.submitDot("play_ForearmR", PositionType.ForearmR, Arrays.asList(new DotPoint(0, 100)), 1000);
 
-    }
-
-    private boolean hasPermission() {
-        boolean blePermission = PermissionUtils.hasBluetoothPermission(this);
-        return blePermission;
-    }
-
-    private void requestPermission() {
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,},
-                1);
-    }
-
-    private void scanIfNeeded() {
-        Log.i(TAG, "scanIfNeeded: ");
-
-        List<SimpleBhapticsDevice> deviceList = sdkRequestHandler.getDeviceList();
-        boolean hasPairedDevice = false;
-        for (SimpleBhapticsDevice device : deviceList) {
-            if (device.isPaired()) {
-                hasPairedDevice = true;
-                break;
-            }
-        }
-
-        if (hasPairedDevice) {
-            Log.i(TAG, "scan: ");
-            sdkRequestHandler.toggleScan();
-        }
     }
 }

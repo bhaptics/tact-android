@@ -72,57 +72,9 @@ public class Ue4GameActivity extends Activity {
         this.appName = appName;
     }
 
-    public void AndroidThunkJava_Scan() {
-        android.util.Log.d(TAG, "AndroidThunkJava_Scan() ");
-        if (!sdkRequestHandler.isScanning()) {
-            sdkRequestHandler.toggleScan();
-        }
-    }
-
-    public void AndroidThunkJava_StopScan() {
-        android.util.Log.d(TAG, "AndroidThunkJava_StopScan() ");
-        if (sdkRequestHandler.isScanning()) {
-            sdkRequestHandler.toggleScan();
-        }
-    }
-
-    public boolean AndroidThunkJava_IsScanning() {
-        android.util.Log.d(TAG, "AndroidThunkJava_IsScanning() ");
-        return sdkRequestHandler.isScanning();
-    }
-
     public String AndroidThunkJava_getDeviceList() {
         android.util.Log.d(TAG, "AndroidThunkJava_getDeviceList() ");
         return DeviceToJsonString(sdkRequestHandler.getDeviceList());
-    }
-
-    // Device Settings
-    public void AndroidThunkJava_Pair(String address) {
-        android.util.Log.d(TAG, "AndroidThunkJava_Pair() " + address);
-        sdkRequestHandler.pair(address);
-    }
-
-    // Pair Device with positoin
-    public void AndroidThunkJava_PairFromPosition(String address, String position) {
-        android.util.Log.d(TAG, "AndroidThunkJava_Pair() " + address + ", " + position);
-        sdkRequestHandler.pair(address);
-        AndroidThunkJava_ChangePosition(address, position);
-    }
-
-    public void AndroidThunkJava_Unpair(String address) {
-        android.util.Log.d(TAG, "AndroidThunkJava_Unpair() " + address);
-        sdkRequestHandler.unpair(address);
-    }
-
-    public void AndroidThunkJava_UnpairAll() {
-        android.util.Log.d(TAG, "AndroidThunkJava_UnpairAll() ");
-        List<SimpleBhapticsDevice> deviceList = sdkRequestHandler.getDeviceList();
-
-        for (SimpleBhapticsDevice device : deviceList) {
-            if (device.isPaired()) {
-                sdkRequestHandler.unpair(device.getAddress());
-            }
-        }
     }
 
     public void AndroidThunkJava_ChangePosition(String address, String position){
@@ -162,11 +114,6 @@ public class Ue4GameActivity extends Activity {
         android.util.Log.d(TAG, "AndroidThunkJava_GetDeviceList() ");
         List<SimpleBhapticsDevice> deviceList = sdkRequestHandler.getDeviceList();
         return DeviceToJsonString(deviceList);
-    }
-
-    public boolean AndroidThunkJava_GetLatestScanStatus() {
-        android.util.Log.d(TAG, "AndroidThunkJava_GetLatestScanStatus() ");
-        return sdkRequestHandler.isScanning();
     }
 
     public void AndroidThunkJava_SubmitRegistered(String key, String altKey,

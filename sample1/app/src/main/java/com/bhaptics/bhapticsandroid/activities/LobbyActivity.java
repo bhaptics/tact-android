@@ -2,16 +2,13 @@ package com.bhaptics.bhapticsandroid.activities;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
-import androidx.core.app.ActivityCompat;
 
 import com.bhaptics.bhapticsandroid.App;
 import com.bhaptics.bhapticsandroid.R;
@@ -24,7 +21,7 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
 
     private ListViewAdapter adapter;
 
-    private Button scanButton, drawingButton, tactFileButton, tactotExampleButton, pingallButton;
+    private Button drawingButton, tactFileButton, tactotExampleButton, pingallButton;
 
 
     private SdkRequestHandler sdkRequestHandler;
@@ -59,9 +56,6 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
         ListView listview = (ListView) findViewById(R.id.deviceListView) ;
         listview.setAdapter(adapter) ;
 
-        scanButton = findViewById(R.id.scan_button);
-        scanButton.setOnClickListener(this);
-
         drawingButton = findViewById(R.id.drawing_button);
         drawingButton.setOnClickListener(this);
 
@@ -75,29 +69,9 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
         pingallButton.setOnClickListener(this);
     }
 
-    public static boolean hasPermissions(Context context, String... permissions) {
-        if (context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        if (!hasPermissions(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
-            Log.e(TAG, "onResume: permission ACCESS_FINE_LOCATION"  );
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    1);
-        } else {
-            sdkRequestHandler.toggleScan();
-        }
     }
 
     @Override
@@ -108,19 +82,7 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.scan_button) {
-            if (!hasPermissions(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                Log.e(TAG, "onResume: permission ACCESS_FINE_LOCATION");
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        1);
-                return;
-            }
-
-            sdkRequestHandler.toggleScan();
-
-        } else if (v.getId() == R.id.ping_button) {
+        if (v.getId() == R.id.ping_button) {
             for (SimpleBhapticsDevice simpleBhapticsDevice : sdkRequestHandler.getDeviceList()) {
                 if (simpleBhapticsDevice.isConnected()) {
                     sdkRequestHandler.ping(simpleBhapticsDevice.getAddress());

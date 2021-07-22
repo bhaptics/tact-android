@@ -28,8 +28,6 @@ public class ListViewAdapter extends BaseAdapter {
     private List<SimpleBhapticsDevice> data;
     private int layout;
 
-    private SdkRequestHandler sdkRequestHandler;
-
     private final Activity context;
 
     public ListViewAdapter(final Activity context, List<SimpleBhapticsDevice> defaultDevices) {
@@ -37,7 +35,6 @@ public class ListViewAdapter extends BaseAdapter {
         this.inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.data = defaultDevices;
         this.layout = R.layout.list_item_bhaptics_device;
-        sdkRequestHandler = App.getHandler(context);
     }
 
     @Override
@@ -74,24 +71,6 @@ public class ListViewAdapter extends BaseAdapter {
 
         TextView connection = convertView.findViewById(R.id.device_connection);
         connection.setText(bhapticsDevice.isConnected() ? "Connected" : "Disconnected");
-        Button button = convertView.findViewById(R.id.device_button);
-
-        if (bhapticsDevice.isPaired()) {
-            button.setText("Unpair");
-        } else {
-            button.setText("Pair");
-        }
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, "onClick: ");
-                if (bhapticsDevice.isPaired()) {
-                    sdkRequestHandler.unpair(bhapticsDevice.getAddress());
-                } else {
-                    sdkRequestHandler.pair(bhapticsDevice.getAddress());
-                }
-            }
-        });
 
 
 
