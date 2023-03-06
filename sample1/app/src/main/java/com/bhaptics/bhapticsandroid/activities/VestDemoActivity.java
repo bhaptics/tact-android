@@ -39,7 +39,7 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sdkRequestHandler = App.getHandler(getApplicationContext());
+        sdkRequestHandler = App.getHandler(this);
 
         setContentView(R.layout.activity_vest_demo);
 

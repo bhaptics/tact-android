@@ -21,7 +21,7 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
 
     private ListViewAdapter adapter;
 
-    private Button drawingButton, tactFileButton, tactotExampleButton, pingallButton;
+    private Button drawingButton, tactotExampleButton, pingallButton;
 
 
     private SdkRequestHandler sdkRequestHandler;
@@ -49,7 +49,7 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
         handler.postDelayed(run, 100);
 
 
-        sdkRequestHandler = App.getHandler(getApplicationContext());
+        sdkRequestHandler = App.getHandler(this);
 
 
         adapter = new ListViewAdapter(this, sdkRequestHandler.getDeviceList());
@@ -58,9 +58,6 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
 
         drawingButton = findViewById(R.id.drawing_button);
         drawingButton.setOnClickListener(this);
-
-        tactFileButton = findViewById(R.id.tact_file_button);
-        tactFileButton.setOnClickListener(this);
 
         tactotExampleButton = findViewById(R.id.tactot_file_button);
         tactotExampleButton.setOnClickListener(this);
@@ -90,8 +87,6 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
             }
         } else if (v.getId() == R.id.drawing_button) {
             startActivityForResult(new Intent(this, DrawingActivity.class), 1);
-        } else if (v.getId() == R.id.tact_file_button) {
-            startActivityForResult(new Intent(this, TactFileActivity.class), 1);
         } else {
             startActivityForResult(new Intent(this, VestDemoActivity.class), 1);
         }
