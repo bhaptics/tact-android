@@ -17,11 +17,11 @@ import android.widget.LinearLayout;
 
 import com.bhaptics.bhapticsandroid.App;
 import com.bhaptics.bhapticsandroid.R;
-import com.bhaptics.bhapticsmanger.BhapticsModule;
-import com.bhaptics.bhapticsmanger.HapticPlayer;
-import com.bhaptics.bhapticsmanger.SdkRequestHandler;
-import com.bhaptics.commons.model.PathPoint;
-import com.bhaptics.commons.model.PositionType;
+//import com.bhaptics.bhapticsmanger.BhapticsModule;
+//import com.bhaptics.bhapticsmanger.HapticPlayer;
+//import com.bhaptics.bhapticsmanger.SdkRequestHandler;
+//import com.bhaptics.commons.model.PathPoint;
+//import com.bhaptics.commons.model.PositionType;
 
 import java.util.Arrays;
 
@@ -30,7 +30,7 @@ public class DrawingActivity extends Activity implements View.OnClickListener {
 
     private Button backButton;
 
-    private SdkRequestHandler handler;
+//    private SdkRequestHandler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,7 @@ public class DrawingActivity extends Activity implements View.OnClickListener {
         DrawingView dv = new DrawingView(this);
         linearLayout.addView(dv);
 
-        handler = App.getHandler(getApplicationContext());
+//        handler = App.getHandler(getApplicationContext());
     }
 
     @Override
@@ -147,11 +147,11 @@ public class DrawingActivity extends Activity implements View.OnClickListener {
             float[] yArr = {yNormalized};
             int[] intArr = {100};
 
-
-            handler.submitPath("VestFront", "VestFront", xArr, yArr, intArr, 1000);
-            handler.submitPath("VestBack", "VestBack", xArr, yArr, intArr, 1000);
-            handler.submitPath("ForearmL", "ForearmL", xArr, yArr, intArr, 1000);
-            handler.submitPath("ForearmR", "ForearmR", xArr, yArr, intArr, 1000);
+//
+//            handler.submitPath("VestFront", "VestFront", xArr, yArr, intArr, 1000);
+//            handler.submitPath("VestBack", "VestBack", xArr, yArr, intArr, 1000);
+//            handler.submitPath("ForearmL", "ForearmL", xArr, yArr, intArr, 1000);
+//            handler.submitPath("ForearmR", "ForearmR", xArr, yArr, intArr, 1000);
         }
 
         private void touch_up() {
@@ -163,11 +163,11 @@ public class DrawingActivity extends Activity implements View.OnClickListener {
             mPath.reset();
             mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
             invalidate();
-
-            handler.turnOff("VestFront");
-            handler.turnOff("VestBack");
-            handler.turnOff("ForearmL");
-            handler.turnOff("ForearmR");
+//
+//            handler.turnOff("VestFront");
+//            handler.turnOff("VestBack");
+//            handler.turnOff("ForearmL");
+//            handler.turnOff("ForearmR");
         }
 
         @Override
