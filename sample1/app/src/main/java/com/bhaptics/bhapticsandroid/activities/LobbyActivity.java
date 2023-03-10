@@ -1,10 +1,8 @@
 package com.bhaptics.bhapticsandroid.activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -13,7 +11,6 @@ import android.widget.ListView;
 import com.bhaptics.bhapticsandroid.App;
 import com.bhaptics.bhapticsandroid.R;
 import com.bhaptics.bhapticsandroid.adapters.ListViewAdapter;
-import com.bhaptics.bhapticsmanger.SdkRequestHandler;
 import com.bhaptics.service.SimpleBhapticsDevice;
 
 public class LobbyActivity extends Activity implements View.OnClickListener {
@@ -23,9 +20,6 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
 
     private Button drawingButton, tactotExampleButton, pingallButton;
 
-
-    private SdkRequestHandler sdkRequestHandler;
-
     private android.os.Handler handler = new android.os.Handler();
     private java.lang.Runnable run = new java.lang.Runnable() {
 
@@ -34,7 +28,7 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
             handler.postDelayed(this, 500);
 
             if (adapter != null) {
-                adapter.onChangeListUpdate(sdkRequestHandler.getDeviceList());
+                adapter.onChangeListUpdate(App.getDeviceList());
                 adapter.notifyDataSetChanged();
             }
         }
@@ -49,11 +43,10 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
         handler.postDelayed(run, 100);
 
 
-        sdkRequestHandler = App.getHandler(this);
+        App.initialize(this);
 
-
-        adapter = new ListViewAdapter(this, sdkRequestHandler.getDeviceList());
-        ListView listview = (ListView) findViewById(R.id.deviceListView) ;
+        adapter = new ListViewAdapter(this, App.getDeviceList());
+        ListView listview = findViewById(R.id.deviceListView) ;
         listview.setAdapter(adapter) ;
 
         drawingButton = findViewById(R.id.drawing_button);
@@ -74,15 +67,15 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        sdkRequestHandler.quit();
+        App.destroy();
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.ping_button) {
-            for (SimpleBhapticsDevice simpleBhapticsDevice : sdkRequestHandler.getDeviceList()) {
+            for (SimpleBhapticsDevice simpleBhapticsDevice : App.getDeviceList()) {
                 if (simpleBhapticsDevice.isConnected()) {
-                    sdkRequestHandler.ping(simpleBhapticsDevice.getAddress());
+                    App.ping(simpleBhapticsDevice.getAddress());
                 }
             }
         } else if (v.getId() == R.id.drawing_button) {

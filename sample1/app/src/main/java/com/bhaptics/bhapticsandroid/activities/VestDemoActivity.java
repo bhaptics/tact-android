@@ -16,8 +16,6 @@ import com.bhaptics.bhapticsandroid.App;
 import com.bhaptics.bhapticsandroid.models.TactFile;
 import com.bhaptics.bhapticsandroid.utils.FileUtils;
 import com.bhaptics.bhapticsandroid.R;
-import com.bhaptics.bhapticsmanger.BhapticsModule;
-import com.bhaptics.bhapticsmanger.HapticPlayer;
 import com.bhaptics.bhapticsmanger.SdkRequestHandler;
 
 import java.util.List;
@@ -29,17 +27,13 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
     private SeekBar durationSeekBar, intensitySeekBar;
     private TextView durationText, intensityText;
 
-    private Spinner tactFileSpinner;
+    private Spinner eventListSpinner;
 
     private float duration, intensity;
-
-    private SdkRequestHandler sdkRequestHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        sdkRequestHandler = App.getHandler(this);
 
         setContentView(R.layout.activity_vest_demo);
 
@@ -72,23 +66,22 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
         frontImage.setOnTouchListener(this);
         backImage.setOnTouchListener(this);
 
-        tactFileSpinner = (Spinner) findViewById(R.id.tactot_feedback_spinner);
+        eventListSpinner = (Spinner) findViewById(R.id.tactot_feedback_spinner);
 
-        String tactotFileFolder = "tactFiles/tactotDemo";
-        List<TactFile> files = FileUtils.listFile(this, tactotFileFolder);
-        String[] arraySpinner = new String[files.size()];
+        List<String> eventList = App.getEventList();
 
-        for (int index = 0; index < files.size(); index++) {
-            arraySpinner[index] = files.get(index).getFileName();
-            String key = files.get(index).getFileName();
-            String tactFileString = files.get(index).getContent();
-            sdkRequestHandler.register(key, tactFileString);
+        for (String s : eventList) {
+            Log.e(TAG, "onCreate: " + s);
+        }
+        String[] arraySpinner = new String[eventList.size()]; // eventList
+        for (int i = 0; i < eventList.size(); i++) {
+            arraySpinner[i] = eventList.get(i);
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, arraySpinner);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        tactFileSpinner.setAdapter(adapter);
+        eventListSpinner.setAdapter(adapter);
     }
 
     @Override
@@ -106,9 +99,9 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
                 backImage.setVisibility(View.GONE);
             }
         } else if (v.getId() == R.id.play_button) {
-            String key = tactFileSpinner.getSelectedItem().toString();
+            String key = eventListSpinner.getSelectedItem().toString();
             Log.e(TAG, "onClick: " + intensity + ", " + duration );
-            sdkRequestHandler.submitRegistered(key, key, intensity, duration, 0, 0);
+            App.play(key, intensity, duration, 0, 0);
         }
     }
 
@@ -131,18 +124,11 @@ public class VestDemoActivity extends Activity implements View.OnClickListener, 
                 float offsetY = -y + 0.5f;
                 if (isFront) {
                     float offsetX = (-x + 0.5f) * 0.3f * 360f;
-                    sdkRequestHandler.submitRegistered(
-                            tactFileSpinner.getSelectedItem().toString(),
-                            tactFileSpinner.getSelectedItem().toString(),
-                            intensity, duration,
-                            offsetX  , offsetY
-                            );
+                    App.play(eventListSpinner.getSelectedItem().toString(), intensity, duration, offsetX, offsetY);
                 } else {
-                    sdkRequestHandler.submitRegistered(
-                            tactFileSpinner.getSelectedItem().toString(),
-                            tactFileSpinner.getSelectedItem().toString(),
+                    App.play(eventListSpinner.getSelectedItem().toString(),
                             intensity, duration,
-                            (x - 0.5f) * 0.3f * 360f + 180f, offsetY);
+                            (x - 0.5f) * 0.3f * 360f + 180f  , offsetY);
                 }
 
                 Log.e(TAG, "onTouch: " + isFront + ", " + x + ", " + y);
