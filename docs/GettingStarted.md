@@ -1,57 +1,27 @@
 ## Getting Started
-### Initialize BhapticsModule
-```
- BhapticsModule.initialize(getApplicationContext());
-```
+### bHaptics Developer Portal
+* Before you start, you need to setup application
+* https://www.notion.so/bhaptics/Create-haptic-events-using-bHaptics-Developer-Portal-b056c5a56e514afeb0ed436873dd87c6
 
-### Access BhapticsManager and HapticPlayer
-```
-// BhapticsManager is use to Manage pairing and connection ot bHaptics devices.
-BhapticsManager bhapticsManager = BhapticsModule.getBhapticsManager();
 
-// HapticPlayer is used to generate haptic patterns in various ways
-HapticPlayer hapticPlayer = BhapticsModule.getHapticPlayer();
+### Initialize SdkRequestHandler
+```
+SdkRequestHandler requestHandler = new SdkRequestHandler(context);
+requestHandler.initialize(appId, sdkKey, defaultSetting);
 ```
 
 ### Dispose when application ends
 ```
-BhapticsModule.destroy();
+requestHandler.quit();
 ```
 
-
-### Check for permission and request permission.
-* [About android permission](https://developer.android.com/training/permissions/requesting)
-* Check and request location permission (to connect bHaptics devices)
+### play event
 ```
-if (!hasPermissions(this,
-        Manifest.permission.ACCESS_FINE_LOCATION)) {
-    // Permission is not granted
-    Log.e(TAG, "onResume: permission ACCESS_FINE_LOCATION"  );
-    ActivityCompat.requestPermissions(this,
-            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-            LOCATION_REQUEST_ID);
-} else {
-    // if you have permission then SDK will work as expected.
-    
-    // By scanning, paired devices will be connected automatically.
-    bhapticsManager.scan();
-}
+ requestHandler.play(appId);
 ```
 
-* Optional: File permission to share pairing information
+### play event with options
 ```
-if (!hasPermissions(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-    ActivityCompat.requestPermissions(this,
-            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,},
-            FILE_REQUEST_ID);
-}
+ requestHandler.play(appId, eventName, intensity, duration, angleX, offsetY);
 ```
 
-
-### How to generate haptic patterns
-* [Guide](./HapticPlayer.md)
-
-### How to manage connections
-* [Guide](./BhapticsManager.md)

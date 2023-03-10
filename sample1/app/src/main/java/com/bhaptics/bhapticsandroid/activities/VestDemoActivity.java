@@ -13,10 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bhaptics.bhapticsandroid.App;
-import com.bhaptics.bhapticsandroid.models.TactFile;
-import com.bhaptics.bhapticsandroid.utils.FileUtils;
 import com.bhaptics.bhapticsandroid.R;
-import com.bhaptics.bhapticsmanger.SdkRequestHandler;
 
 import java.util.List;
 

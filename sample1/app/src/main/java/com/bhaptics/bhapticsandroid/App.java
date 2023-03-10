@@ -66,7 +66,6 @@ public class App {
     }
 
     public static void destroy() {
-        BhapticsModule.destroy();
         requestHandler.quit();
         requestHandler = null;
     }
