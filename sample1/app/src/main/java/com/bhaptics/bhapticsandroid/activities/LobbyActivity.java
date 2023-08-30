@@ -62,6 +62,8 @@ public class LobbyActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
+
+        App.refreshPairing();
     }
 
     @Override
