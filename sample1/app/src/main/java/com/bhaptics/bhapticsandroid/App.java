@@ -30,6 +30,15 @@ public class App {
         return;
     }
 
+    public static void refreshPairing() {
+        if (requestHandler == null) {
+            Log.e(TAG, "requestHandler: not initialized cannot refreshPairing");
+            return;
+        }
+
+        requestHandler.refreshPairing();
+    }
+
     public static int play(String eventName, float intensity, float duration, float angleX, float offsetY) {
         if (requestHandler == null) {
             Log.e(TAG, "requestHandler: not initialized cannot play");
