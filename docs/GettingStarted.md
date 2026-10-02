@@ -1,5 +1,8 @@
 ## Getting Started
 
+### Install bHaptics Player for Android
+* Download [bHaptics Player for Android](https://play.google.com/store/apps/details?id=com.bhaptics.player&hl=en) from Google Play and pair your devices in it. The SDK plays haptics through this app.
+
 ### bHaptics Developer Portal
 * To play haptic events, create an application and its events in the [bHaptics Developer Portal](https://developer.bhaptics.com) first.
 * `playMotors` does not need any Developer Portal event.

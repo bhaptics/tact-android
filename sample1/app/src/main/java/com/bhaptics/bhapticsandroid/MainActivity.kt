@@ -42,8 +42,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+private const val POSITION_VEST = 0
 private const val POSITION_FOREARM_L = 1
 private const val POSITION_FOREARM_R = 2
+private const val VEST_MOTOR_COUNT = 40
 private const val SLEEVE_MOTOR_COUNT = 3
 
 class MainActivity : ComponentActivity() {
@@ -86,8 +88,8 @@ class MainActivity : ComponentActivity() {
             if (logs.isNotEmpty()) listState.animateScrollToItem(logs.lastIndex)
         }
 
-        fun playSleeve(position: Int) {
-            val motors = IntArray(SLEEVE_MOTOR_COUNT) { intensity.toInt() }
+        fun playMotors(position: Int, motorCount: Int = SLEEVE_MOTOR_COUNT) {
+            val motors = IntArray(motorCount) { intensity.toInt() }
             val millis = duration.toIntOrNull() ?: 300
             val result = sdk.playMotors(appId, position, millis, motors)
             log("playMotors(${SimpleBhapticsDevice.positionToString(position)}, ${millis}ms, ${motors.contentToString()}) -> $result")
@@ -134,12 +136,13 @@ class MainActivity : ComponentActivity() {
                 )
 
                 ButtonRow {
-                    RowButton("Left") { playSleeve(POSITION_FOREARM_L) }
-                    RowButton("Right") { playSleeve(POSITION_FOREARM_R) }
+                    RowButton("Left") { playMotors(POSITION_FOREARM_L) }
+                    RowButton("Right") { playMotors(POSITION_FOREARM_R) }
                     RowButton("Both") {
-                        playSleeve(POSITION_FOREARM_L)
-                        playSleeve(POSITION_FOREARM_R)
+                        playMotors(POSITION_FOREARM_L)
+                        playMotors(POSITION_FOREARM_R)
                     }
+                    RowButton("Vest") { playMotors(POSITION_VEST, VEST_MOTOR_COUNT) }
                 }
 
                 ButtonRow {

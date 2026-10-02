@@ -1,7 +1,7 @@
 ## How to set up your project
 
 ### 1. Install bHaptics Player for Android
-* Install [bHaptics Player for Android](https://play.google.com/store/apps/details?id=com.bhaptics.player) on the phone.
+* Install [bHaptics Player for Android](https://play.google.com/store/apps/details?id=com.bhaptics.player&hl=en) on the phone.
 * Pair your devices in the Player app.
 
 ### 2. Add the aar file
