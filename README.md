@@ -19,7 +19,7 @@ Your app ──(SdkRequestHandler / AIDL)──▶ bHaptics Player for Android �
 * [Change log](CHANGELOG.md)
 
 ### Sample app
-`sample1` is a minimal app that initializes the SDK, lists devices, and plays the left/right TactSleeve with a chosen intensity and duration.
+`sample1` is a minimal app that initializes the SDK, lists devices, and plays the left/right TactSleeve and TactSuit with a chosen intensity and duration.
 
 ```
 cd sample1
