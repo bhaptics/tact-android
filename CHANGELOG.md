@@ -1,5 +1,9 @@
 ## Change Log
 
+### 2.1.0
+* Added `BhapticsPlayer.kt` Kotlin wrapper in `sample1`: keeps `appId`, `BhapticsPosition` enum, named / default arguments, Kotlin-typed device list.
+* `sample1` now uses the wrapper.
+
 ### 2.0.0
 * Switched to bHaptics Player for Android (AIDL service) mode. The SDK no longer connects to devices over Bluetooth directly.
 * `libs/` now ships a single `bhaptics_manager.aar`. `bhaptics_ble.aar`, `bhaptics_commons.aar` and `bhaptics_core.aar` are removed.

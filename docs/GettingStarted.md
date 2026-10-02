@@ -7,6 +7,21 @@
 * To play haptic events, create an application and its events in the [bHaptics Developer Portal](https://developer.bhaptics.com) first.
 * `playMotors` does not need any Developer Portal event.
 
+### Kotlin wrapper
+For Kotlin, copy [`BhapticsPlayer.kt`](../sample1/app/src/main/java/com/bhaptics/bhapticsandroid/BhapticsPlayer.kt) into your project (change the `package` line). It keeps `appId`, uses a `BhapticsPosition` enum, and supports named / default arguments.
+```kotlin
+val haptics = BhapticsPlayer(activity, appId = "your-app-id", apiKey = "your-api-key")
+
+haptics.playMotors(BhapticsPosition.ForearmL, durationMillis = 300, intensity = 80)
+haptics.playMotors(BhapticsPosition.Vest, durationMillis = 300, motors = IntArray(40) { 50 })
+haptics.play("DangerLeft", intensity = 0.5f)
+haptics.devices.filter { it.isConnected }.forEach { println("${it.position} ${it.battery}") }
+haptics.stopAll()
+haptics.quit()
+```
+
+The sections below use `SdkRequestHandler` directly (Java).
+
 ### Initialize
 `SdkRequestHandler` binds to bHaptics Player for Android when it is created.
 ```java

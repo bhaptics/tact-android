@@ -20,6 +20,7 @@ Your app ──(SdkRequestHandler / AIDL)──▶ bHaptics Player for Android �
 
 ### Sample app
 `sample1` is a minimal app that initializes the SDK, lists devices, and plays the left/right TactSleeve and TactSuit with a chosen intensity and duration.
+The sample uses [`BhapticsPlayer.kt`](sample1/app/src/main/java/com/bhaptics/bhapticsandroid/BhapticsPlayer.kt), a small Kotlin wrapper you can copy into your project.
 
 ```
 cd sample1
