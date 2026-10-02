@@ -1,27 +1,65 @@
 ## Getting Started
+
+### Install bHaptics Player for Android
+* Download [bHaptics Player for Android](https://play.google.com/store/apps/details?id=com.bhaptics.player&hl=en) from Google Play and pair your devices in it. The SDK plays haptics through this app.
+
 ### bHaptics Developer Portal
-* Before you start, you need to setup application
-* https://www.notion.so/bhaptics/Create-haptic-events-using-bHaptics-Developer-Portal-b056c5a56e514afeb0ed436873dd87c6
+* To play haptic events, create an application and its events in the [bHaptics Developer Portal](https://developer.bhaptics.com) first.
+* `playMotors` does not need any Developer Portal event.
 
+### Initialize
+`SdkRequestHandler` binds to bHaptics Player for Android when it is created.
+```java
+SdkRequestHandler sdk = new SdkRequestHandler(activity);
+sdk.initialize(appId, apiKey, "");
+```
+* `sdk.isBhapticsUser()` returns `false` if bHaptics Player for Android is not installed.
 
-### Initialize SdkRequestHandler
-```
-SdkRequestHandler requestHandler = new SdkRequestHandler(context);
-requestHandler.initialize(appId, sdkKey, defaultSetting);
-```
-
-### Dispose when application ends
-```
-requestHandler.quit();
-```
-
-### play event
-```
- requestHandler.play(appId);
+### Release when the app ends
+```java
+sdk.quit();
 ```
 
-### play event with options
-```
- requestHandler.play(appId, eventName, intensity, duration, angleX, offsetY);
+### Play motors directly
+Set each motor's intensity (0–100) at runtime, without a Developer Portal event.
+```java
+int[] motors = {100, 100, 100};                  // TactSleeve has 3 motors
+int requestId = sdk.playMotors(appId, 1, 300, motors);   // position 1 = ForearmL, 300 ms
 ```
 
+| position | Device |
+|---|---|
+| 0 | TactSuit (Vest, 40 motors) |
+| 1 | TactSleeve left (ForearmL, 3 motors) |
+| 2 | TactSleeve right (ForearmR, 3 motors) |
+| 3 | TactVisor (Head) |
+| 4 / 5 | Hand left / right |
+| 6 / 7 | Foot left / right |
+| 8 / 9 | TactGlove left / right |
+
+### Play a Developer Portal event
+```java
+sdk.play(appId, eventName);
+sdk.play(appId, eventName, intensity, duration, angleX, offsetY);
+```
+| Parameter | Description |
+|---|---|
+| `intensity` | Intensity multiplier. `1` = as designed |
+| `duration` | Duration multiplier. `1` = as designed |
+| `angleX` | Rotates the pattern around the body horizontally (0–360). Used for TactSuit |
+| `offsetY` | Moves the pattern up or down (-0.5–0.5). Used for TactSuit |
+
+### Stop
+```java
+sdk.stopAll(appId);
+```
+
+### Devices
+```java
+for (SimpleBhapticsDevice device : sdk.getDeviceList()) {
+    SimpleBhapticsDevice.positionToString(device.getPosition());
+    device.isConnected();
+    device.getBattery();
+    sdk.ping(device.getAddress());
+}
+```

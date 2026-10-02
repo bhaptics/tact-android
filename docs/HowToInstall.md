@@ -1,26 +1,26 @@
-## How to setup in your project
+## How to set up your project
 
-### Download and extract aar files
-* You can download aar files [here](https://github.com/bhaptics/tact-android/releases)
-* Then extract aar files to your app/libs files
+### 1. Install bHaptics Player for Android
+* Install [bHaptics Player for Android](https://play.google.com/store/apps/details?id=com.bhaptics.player&hl=en) on the phone.
+* Pair your devices in the Player app.
 
-### Import aar files to your project.
-* open up your (app/build.gradle)
-* Add aar file dependency like below
+### 2. Add the aar file
+* Copy [`libs/bhaptics_manager.aar`](../libs/bhaptics_manager.aar) to your `app/libs` folder.
+* Add the dependency in `app/build.gradle`:
 ```
-
 dependencies {
-...
-  // Assuming you put aar files to app/libs folder your  
-  implementation fileTree(dir: 'libs', include: ['*.aar'])
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
 }
 ```
 
-### Update AndroidManifest.xml (app/src/main/AndroidManifest.xml)
-* give permission for the bluetooth connection
+### 3. Update AndroidManifest.xml
+* On Android 11 (API 30) and later, declare the Player app package so your app can bind to it:
 ```
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<manifest ...>
+    <queries>
+        <package android:name="com.bhaptics.player" />
+    </queries>
+    ...
+</manifest>
 ```
+* No Bluetooth or location permission is needed. The Player app owns the Bluetooth connection.
