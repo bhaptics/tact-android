@@ -53,16 +53,16 @@ class BhapticsPlayer(activity: Activity, val appId: String, apiKey: String = "")
     fun playMotors(position: BhapticsPosition, durationMillis: Int, motors: IntArray): Int =
         sdk.playMotors(appId, position.value, durationMillis, motors)
 
-    fun playMotors(position: BhapticsPosition, durationMillis: Int, intensity: Int): Int =
-        playMotors(position, durationMillis, IntArray(position.motorCount) { intensity.coerceIn(0, 100) })
+    fun playMotors(position: BhapticsPosition, durationMillis: Int, motorValue: Int): Int =
+        playMotors(position, durationMillis, IntArray(position.motorCount) { motorValue.coerceIn(0, 100) })
 
     fun play(
         event: String,
-        intensity: Float = 1f,
-        duration: Float = 1f,
+        intensityRatio: Float = 1f,
+        durationRatio: Float = 1f,
         angleX: Float = 0f,
         offsetY: Float = 0f,
-    ): Int = sdk.play(appId, event, intensity, duration, angleX, offsetY)
+    ): Int = sdk.play(appId, event, intensityRatio, durationRatio, angleX, offsetY)
 
     fun stop(requestId: Int): Boolean = sdk.stop(appId, requestId)
 

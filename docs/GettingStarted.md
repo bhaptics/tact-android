@@ -12,9 +12,9 @@ For Kotlin, copy [`BhapticsPlayer.kt`](../sample1/app/src/main/java/com/bhaptics
 ```kotlin
 val haptics = BhapticsPlayer(activity, appId = "your-app-id", apiKey = "your-api-key")
 
-haptics.playMotors(BhapticsPosition.ForearmL, durationMillis = 300, intensity = 80)
+haptics.playMotors(BhapticsPosition.ForearmL, durationMillis = 300, motorValue = 80)
 haptics.playMotors(BhapticsPosition.Vest, durationMillis = 300, motors = IntArray(40) { 50 })
-haptics.play("DangerLeft", intensity = 0.5f)
+haptics.play("DangerLeft", intensityRatio = 0.5f)
 haptics.devices.filter { it.isConnected }.forEach { println("${it.position} ${it.battery}") }
 haptics.stopAll()
 haptics.quit()

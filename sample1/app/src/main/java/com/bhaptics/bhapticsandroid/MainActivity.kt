@@ -107,8 +107,9 @@ class MainActivity : ComponentActivity() {
                     }
                     RowButton("Devices") {
                         withPlayer {
-                            log("${devices.size} device(s)")
-                            devices.forEach { log("  ${it.position} connected=${it.isConnected} battery=${it.battery}") }
+                            val list = devices
+                            log("${list.size} device(s)")
+                            list.forEach { log("  ${it.position} connected=${it.isConnected} battery=${it.battery}") }
                         }
                     }
                     RowButton("Ping all") {
@@ -144,8 +145,8 @@ class MainActivity : ComponentActivity() {
                     OutlinedTextField(event, { event = it }, Modifier.weight(2f), label = { Text("Event name") }, singleLine = true)
                     RowButton("Play event") {
                         withPlayer {
-                            val result = play(event, intensity = intensity / 100f)
-                            log("play($event, intensity=${intensity / 100f}) -> $result")
+                            val result = play(event, intensityRatio = intensity / 100f)
+                            log("play($event, intensityRatio=${intensity / 100f}) -> $result")
                         }
                     }
                 }
