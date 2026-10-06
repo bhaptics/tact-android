@@ -13,7 +13,7 @@ For Kotlin, copy [`BhapticsPlayer.kt`](../sample1/app/src/main/java/com/bhaptics
 val haptics = BhapticsPlayer(activity, appId = "your-app-id", apiKey = "your-api-key")
 
 haptics.playMotors(BhapticsPosition.ForearmL, durationMillis = 300, motorValue = 80)
-haptics.playMotors(BhapticsPosition.Vest, durationMillis = 300, motors = IntArray(40) { 50 })
+haptics.playMotors(BhapticsPosition.Vest, durationMillis = 300, motors = IntArray(32) { 50 })
 haptics.play("DangerLeft", intensityRatio = 0.5f)
 haptics.devices.filter { it.isConnected }.forEach { println("${it.position} ${it.battery}") }
 haptics.stopAll()
@@ -44,13 +44,15 @@ int requestId = sdk.playMotors(appId, 1, 300, motors);   // position 1 = Forearm
 
 | position | Device |
 |---|---|
-| 0 | TactSuit (Vest, 40 motors) |
+| 0 | TactSuit (Vest, 32 motors) |
 | 1 | TactSleeve left (ForearmL, 3 motors) |
 | 2 | TactSleeve right (ForearmR, 3 motors) |
 | 3 | TactVisor (Head) |
 | 4 / 5 | Hand left / right |
 | 6 / 7 | Foot left / right |
 | 8 / 9 | TactGlove left / right |
+
+Motor index layout for each device: [Motor Index](https://docs.bhaptics.com/sdk/further/motor).
 
 ### Play a Developer Portal event
 ```java

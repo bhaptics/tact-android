@@ -5,7 +5,7 @@ import com.bhaptics.bhapticsmanger.SdkRequestHandler
 import com.bhaptics.service.SimpleBhapticsDevice
 
 enum class BhapticsPosition(val value: Int, val motorCount: Int) {
-    Vest(0, 40),
+    Vest(0, 32),
     ForearmL(1, 3),
     ForearmR(2, 3),
     Head(3, 4),
