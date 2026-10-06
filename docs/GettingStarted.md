@@ -1,11 +1,30 @@
 ## Getting Started
 
+> [!IMPORTANT]
+> **Install [bHaptics Player for Android](https://play.google.com/store/apps/details?id=com.bhaptics.player&hl=en) before running your app.**
+> If you install it while your app is running, **restart your app** (close it completely and open it again). The SDK does not connect to a Player app installed later.
+
 ### Install bHaptics Player for Android
 * Download [bHaptics Player for Android](https://play.google.com/store/apps/details?id=com.bhaptics.player&hl=en) from Google Play and pair your devices in it. The SDK plays haptics through this app.
 
 ### bHaptics Developer Portal
 * To play haptic events, create an application and its events in the [bHaptics Developer Portal](https://developer.bhaptics.com) first.
 * `playMotors` does not need any Developer Portal event.
+
+### Kotlin wrapper
+For Kotlin, copy [`BhapticsPlayer.kt`](../sample1/app/src/main/java/com/bhaptics/bhapticsandroid/BhapticsPlayer.kt) into your project (change the `package` line). It keeps `appId`, uses a `BhapticsPosition` enum, and supports named / default arguments.
+```kotlin
+val haptics = BhapticsPlayer(activity, appId = "your-app-id", apiKey = "your-api-key")
+
+haptics.playMotors(BhapticsPosition.ForearmL, durationMillis = 300, motorValue = 80)
+haptics.playMotors(BhapticsPosition.Vest, durationMillis = 300, motors = IntArray(32) { 50 })
+haptics.play("DangerLeft", intensityRatio = 0.5f)
+haptics.devices.filter { it.isConnected }.forEach { println("${it.position} ${it.battery}") }
+haptics.stopAll()
+haptics.quit()
+```
+
+The sections below use `SdkRequestHandler` directly (Java).
 
 ### Initialize
 `SdkRequestHandler` binds to bHaptics Player for Android when it is created.
@@ -14,6 +33,8 @@ SdkRequestHandler sdk = new SdkRequestHandler(activity);
 sdk.initialize(appId, apiKey, "");
 ```
 * `sdk.isBhapticsUser()` returns `false` if bHaptics Player for Android is not installed.
+* Without the Player app, nothing plays: `play` / `playMotors` return `-1`, the device list is empty, and `stopAll` returns `true` without doing anything.
+* Without `<queries>` for `com.bhaptics.player` (Android 11+), the SDK behaves the same as when the Player app is not installed. See [How to Install](HowToInstall.md).
 
 ### Release when the app ends
 ```java
@@ -29,13 +50,15 @@ int requestId = sdk.playMotors(appId, 1, 300, motors);   // position 1 = Forearm
 
 | position | Device |
 |---|---|
-| 0 | TactSuit (Vest, 40 motors) |
+| 0 | TactSuit (Vest, 32 motors) |
 | 1 | TactSleeve left (ForearmL, 3 motors) |
 | 2 | TactSleeve right (ForearmR, 3 motors) |
 | 3 | TactVisor (Head) |
 | 4 / 5 | Hand left / right |
 | 6 / 7 | Foot left / right |
 | 8 / 9 | TactGlove left / right |
+
+Motor index layout for each device: [Motor Index](https://docs.bhaptics.com/sdk/further/motor).
 
 ### Play a Developer Portal event
 ```java

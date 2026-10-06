@@ -36,21 +36,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bhaptics.bhapticsmanger.SdkRequestHandler
-import com.bhaptics.service.SimpleBhapticsDevice
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-private const val POSITION_VEST = 0
-private const val POSITION_FOREARM_L = 1
-private const val POSITION_FOREARM_R = 2
-private const val VEST_MOTOR_COUNT = 40
-private const val SLEEVE_MOTOR_COUNT = 3
-
 class MainActivity : ComponentActivity() {
 
-    private lateinit var sdk: SdkRequestHandler
+    private var player: BhapticsPlayer? = null
     private val logs = mutableStateListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,9 +51,6 @@ class MainActivity : ComponentActivity() {
             statusBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT),
         )
-
-        sdk = SdkRequestHandler(this)
-        log("bHaptics Player installed: ${sdk.isBhapticsUser}")
 
         setContent {
             MaterialTheme {
@@ -72,7 +61,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        sdk.quit()
+        player?.quit()
+    }
+
+    private fun withPlayer(action: BhapticsPlayer.() -> Unit) {
+        player?.action() ?: log("Initialize first")
     }
 
     @Composable
@@ -88,11 +81,10 @@ class MainActivity : ComponentActivity() {
             if (logs.isNotEmpty()) listState.animateScrollToItem(logs.lastIndex)
         }
 
-        fun playMotors(position: Int, motorCount: Int = SLEEVE_MOTOR_COUNT) {
-            val motors = IntArray(motorCount) { intensity.toInt() }
+        fun playMotors(position: BhapticsPosition) = withPlayer {
             val millis = duration.toIntOrNull() ?: 300
-            val result = sdk.playMotors(appId, position, millis, motors)
-            log("playMotors(${SimpleBhapticsDevice.positionToString(position)}, ${millis}ms, ${motors.contentToString()}) -> $result")
+            val result = playMotors(position, millis, intensity.toInt())
+            log("playMotors($position, ${millis}ms, ${intensity.toInt()}) -> $result")
         }
 
         Scaffold { innerPadding ->
@@ -108,19 +100,23 @@ class MainActivity : ComponentActivity() {
 
                 ButtonRow {
                     RowButton("Initialize") {
-                        sdk.initialize(appId, apiKey, "")
-                        log("initialize($appId)")
+                        player?.quit()
+                        player = BhapticsPlayer(this@MainActivity, appId, apiKey).also {
+                            log("initialize($appId) installed=${it.isPlayerInstalled}")
+                        }
                     }
                     RowButton("Devices") {
-                        val devices = sdk.deviceList
-                        log("${devices.size} device(s)")
-                        devices.forEach {
-                            log("  ${SimpleBhapticsDevice.positionToString(it.position)} connected=${it.isConnected} battery=${it.battery}")
+                        withPlayer {
+                            val list = devices
+                            log("${list.size} device(s)")
+                            list.forEach { log("  ${it.position} connected=${it.isConnected} battery=${it.battery}") }
                         }
                     }
                     RowButton("Ping all") {
-                        sdk.deviceList.filter { it.isConnected }.forEach { sdk.ping(it.address) }
-                        log("ping all")
+                        withPlayer {
+                            pingAll()
+                            log("ping all")
+                        }
                     }
                 }
 
@@ -136,25 +132,27 @@ class MainActivity : ComponentActivity() {
                 )
 
                 ButtonRow {
-                    RowButton("Left") { playMotors(POSITION_FOREARM_L) }
-                    RowButton("Right") { playMotors(POSITION_FOREARM_R) }
+                    RowButton("Left") { playMotors(BhapticsPosition.ForearmL) }
+                    RowButton("Right") { playMotors(BhapticsPosition.ForearmR) }
                     RowButton("Both") {
-                        playMotors(POSITION_FOREARM_L)
-                        playMotors(POSITION_FOREARM_R)
+                        playMotors(BhapticsPosition.ForearmL)
+                        playMotors(BhapticsPosition.ForearmR)
                     }
-                    RowButton("Vest") { playMotors(POSITION_VEST, VEST_MOTOR_COUNT) }
+                    RowButton("Vest") { playMotors(BhapticsPosition.Vest) }
                 }
 
                 ButtonRow {
                     OutlinedTextField(event, { event = it }, Modifier.weight(2f), label = { Text("Event name") }, singleLine = true)
                     RowButton("Play event") {
-                        val result = sdk.play(appId, event, intensity / 100f, 1f, 0f, 0f)
-                        log("play($event, intensity=${intensity / 100f}) -> $result")
+                        withPlayer {
+                            val result = play(event, intensityRatio = intensity / 100f)
+                            log("play($event, intensityRatio=${intensity / 100f}) -> $result")
+                        }
                     }
                 }
 
                 ButtonRow {
-                    RowButton("Stop all") { log("stopAll -> ${sdk.stopAll(appId)}") }
+                    RowButton("Stop all") { withPlayer { log("stopAll -> ${stopAll()}") } }
                     RowButton("Clear log") { logs.clear() }
                 }
 
