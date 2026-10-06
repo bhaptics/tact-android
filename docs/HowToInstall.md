@@ -1,5 +1,9 @@
 ## How to set up your project
 
+> [!IMPORTANT]
+> **Install [bHaptics Player for Android](https://play.google.com/store/apps/details?id=com.bhaptics.player&hl=en) before running your app.**
+> If you install it while your app is running, **restart your app** (close it completely and open it again). The SDK does not connect to a Player app installed later.
+
 ### 1. Install bHaptics Player for Android
 * Install [bHaptics Player for Android](https://play.google.com/store/apps/details?id=com.bhaptics.player&hl=en) on the phone.
 * Pair your devices in the Player app.

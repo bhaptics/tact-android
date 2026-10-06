@@ -9,6 +9,11 @@ Your app ──(SdkRequestHandler / AIDL)──▶ bHaptics Player for Android �
 ```
 
 ### Requirements
+
+> [!IMPORTANT]
+> **Install [bHaptics Player for Android](https://play.google.com/store/apps/details?id=com.bhaptics.player&hl=en) before running your app.**
+> If you install it while your app is running, **restart your app** (close it completely and open it again). The SDK does not connect to a Player app installed later.
+
 * Android 7.0 (API 24) or later
 * [bHaptics Player for Android](https://play.google.com/store/apps/details?id=com.bhaptics.player&hl=en) installed, with your devices paired in it
 * An App ID and API Key from the [bHaptics Developer Portal](https://developer.bhaptics.com) (needed for Developer Portal events)

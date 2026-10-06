@@ -1,5 +1,9 @@
 ## Getting Started
 
+> [!IMPORTANT]
+> **Install [bHaptics Player for Android](https://play.google.com/store/apps/details?id=com.bhaptics.player&hl=en) before running your app.**
+> If you install it while your app is running, **restart your app** (close it completely and open it again). The SDK does not connect to a Player app installed later.
+
 ### Install bHaptics Player for Android
 * Download [bHaptics Player for Android](https://play.google.com/store/apps/details?id=com.bhaptics.player&hl=en) from Google Play and pair your devices in it. The SDK plays haptics through this app.
 
@@ -29,6 +33,8 @@ SdkRequestHandler sdk = new SdkRequestHandler(activity);
 sdk.initialize(appId, apiKey, "");
 ```
 * `sdk.isBhapticsUser()` returns `false` if bHaptics Player for Android is not installed.
+* Without the Player app, nothing plays: `play` / `playMotors` return `-1`, the device list is empty, and `stopAll` returns `true` without doing anything.
+* Without `<queries>` for `com.bhaptics.player` (Android 11+), the SDK behaves the same as when the Player app is not installed. See [How to Install](HowToInstall.md).
 
 ### Release when the app ends
 ```java
